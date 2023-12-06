@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int totalMoney(int n) {
+       int day = 1;
+       int week = 1;
+       int ans = 0;
+
+       while(day <= n){
+           int i = 0; // the day of the week
+
+           while(i < 7 and day <= n){
+               ans += week + i;
+               day++;
+               i++;
+           }
+           week++;
+       }
+       return ans; 
+    }
+};
