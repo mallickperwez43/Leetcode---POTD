@@ -1,0 +1,35 @@
+class Solution {
+public:
+    vector<vector<int>> onesMinusZeros(vector<vector<int>>& grid) {
+        int rowSize = grid.size();
+        int colSize = grid[0].size();
+
+        vector<int> onesRow(rowSize , 0);
+        vector<int> onesCol(colSize , 0);
+        vector<int> zerosRow(rowSize , 0);
+        vector<int> zerosCol(colSize , 0);
+
+        for(int row = 0 ; row < rowSize ; row++){
+            for(int col = 0 ; col < colSize ; col++){
+                if(grid[row][col] == 1){
+                    onesRow[row]++;
+                    onesCol[col]++;
+                }
+            }
+        }
+
+        for(int row = 0 ; row < rowSize ; row++){
+            zerosRow[row] = rowSize - onesRow[row];
+        }
+        for(int col = 0 ; col < colSize ; col++){
+            zerosCol[col] = colSize - onesCol[col];
+        }
+
+        for(int row = 0 ; row < rowSize ; row++){
+            for(int col = 0 ; col < colSize ; col++){
+                grid[row][col] = onesRow[row] + onesCol[col] - zerosRow[row] - zerosCol[col];
+            }
+        }
+        return grid;
+    }
+};
