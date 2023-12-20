@@ -1,0 +1,37 @@
+class Solution {
+public:
+    int buyChoco(vector<int>& prices, int money) {
+        sort(prices.begin() , prices.end());
+        if(money - prices[0] - prices[1] < 0)
+        return money;
+        return money - prices[0] - prices[1];
+    }
+};
+
+// method 2
+class Solution {
+public:
+    int buyChoco(vector<int>& prices, int money) {
+        int firstMin = INT_MAX;
+        int secondMin = INT_MAX;
+
+        for(int i = 0 ; i < prices.size() ; i++){
+            if(prices[i] < firstMin){
+                secondMin = firstMin;
+                firstMin = prices[i];
+            }
+            else{
+                secondMin = min(secondMin , prices[i]);
+            }
+        }
+
+        int moneyLeftNow = money - firstMin - secondMin;
+
+        if(moneyLeftNow >= 0){
+            return moneyLeftNow;
+        }
+        else{
+            return money;
+        }
+    }
+};
