@@ -1,0 +1,26 @@
+class Solution {
+public:
+    bool isPathCrossing(string path) {
+        map<pair<int,int>,bool> visPnt;
+
+        int currX , currY;
+        currX = currY = 0;
+
+        for(auto i : path){
+            visPnt[{currX , currY}] = 1; // true
+
+            if(i == 'N')
+                currX--;
+            else if(i == 'S')
+                currX++;
+            else if(i == 'E')
+                currY++;
+            else
+                currY--;
+
+            if(visPnt.count({currX,currY}))  // already visited point
+                return 1;            
+        } 
+        return 0;
+    }
+};
