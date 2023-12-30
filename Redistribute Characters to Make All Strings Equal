@@ -1,0 +1,38 @@
+class Solution {
+public:
+    bool makeEqual(vector<string>& words) {
+        int n = words.size();
+        vector<int> count(26,0);
+        for(string word : words){
+            for(char c : word){
+                count[c - 'a']++;
+            }
+        }
+
+        for(int val : count){
+            if(val % n != 0){
+                return 0;
+            }
+        }
+        
+        return 1;
+    }
+};
+
+class Solution {
+public:
+    bool makeEqual(vector<string>& words) {
+        int n = words.size();
+        unordered_map<char,int> mp;
+        for(auto s : words){
+            for(auto c : s){
+                mp[c]++;
+            }
+        }
+
+        for(auto i : mp){
+            if(i.second % n)  return 0;
+        }
+        return 1;
+    }
+};
