@@ -1,0 +1,22 @@
+// Method 1 Recursion
+
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        if(n == 1) 
+            return true;
+        if(n % 2 == 1 or n == 0)
+            return false;
+        
+        return isPowerOfTwo(n/2);
+    }
+}
+
+// Method 2 Bit Manipulation
+
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        return n > 0 && !(n & n - 1);
+    }
+};
