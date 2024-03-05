@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int minimumLength(string s) {
+        // two pointer one at 0 and other at last index
+        int left = 0;        
+        int right = s.size() - 1;
+
+        // loop until char are equal and left does sarpases right
+        while (left < right && s[left] == s[right]) {
+            char ch = s[left];    // the current char at left index
+            while (left <= right && s[left] == ch) {  // loop until left doesnt sarpases right and the next char 
+                left++;                               // is the same keep incrementing left 
+            }
+            while (right >= left && s[right] == ch) {  // loop until right doesnt sarpases left and the next char 
+                right--;                               // is the same keep decrementing right 
+            }
+        }
+
+        return right - left + 1;    // + 1 to include the current char 
+    }
+};
