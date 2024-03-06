@@ -1,0 +1,35 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        if(!head)
+            return 0;
+        
+        // two pointer
+        ListNode * slow = head;   // slow pointer -> head
+        ListNode * fast = head -> next;  // fast pointer -> head -> next
+        
+        // until fast doest reaches Null
+        while(fast) {            
+            if(fast == slow)    // if both pointers meet there exist a cycle
+                return 1;
+            
+            // increment slow by one and fast by two
+            slow = slow -> next;   
+            fast = fast -> next ? (fast -> next) -> next : fast -> next;
+        }
+
+        return 0;  // reached null then no cycle exist
+    }
+};
+
+// tc : O(n) sc : O(1)
+
+// Floyd’s Cycle-Finding Algorithm // fast slow approach // 2 pointers // "tortoise and the hare algorithm"
