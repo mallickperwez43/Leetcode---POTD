@@ -1,0 +1,31 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        // edge case
+        // empty list or single node list
+        if(head == NULL or head -> next == NULL) return head; 
+
+        // two pointers fast and slow , slow is at head while fast is at next of head
+        ListNode* fast = head -> next;
+        ListNode* slow = head;
+    
+        // until fast reaches NULL
+        while(fast != NULL) {
+            fast = fast -> next ? (fast -> next) -> next : fast -> next;  // move fast by 2
+
+            slow = slow -> next;  // slow by 1
+        }
+
+        return slow;   // fast is at last node and slow would be at the middle 
+    }
+};
