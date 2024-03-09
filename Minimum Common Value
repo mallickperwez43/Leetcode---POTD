@@ -1,0 +1,47 @@
+// method 1 two pointer
+
+class Solution {
+public:
+    int getCommon(vector<int>& nums1, vector<int>& nums2) {
+        int i = 0 , j = 0;  // two pointer
+
+        while(i < nums1.size() and j < nums2.size()){
+            if(nums1[i] == nums2[j]) // found the minimum common
+                return nums1[i];
+            else if(nums1[i] < nums2[j])  // increment i if the value is greater in second array 
+                i++;
+            else if(nums1[i] > nums2[j])  // increment j if the value is greater in first array 
+                j++;
+        }
+        return -1;
+    }
+};
+
+tc O(n + m)  sc O(1)
+ 
+// method 2 binary search
+
+class Solution {
+private:
+    // binary search function (search)
+    bool search(vector<int>& nums, int key) {  // passing nums2 array and key(element of num1)
+        int low = 0;                 // low and high pointer
+        int high = nums.size() - 1;
+        while(low <= high){
+            int mid = low + (high - low) / 2;   // mid calculate
+            if(nums[mid] == key) return true;   // key found 
+            else if(nums[mid] < key) low = mid + 1;  // update low 
+            else high = mid - 1;     // update high
+        }
+        return false;    // didnt found
+    }
+public:
+    int getCommon(vector<int>& nums1, vector<int>& nums2) {
+        for(int i = 0; i < nums1.size(); i++){  // iterate through each element in nums1 array
+            if(search(nums2, nums1[i])) return nums1[i];   // using the binary search 
+        }
+        return -1;
+    }
+};
+
+tc O(n * log m) sc O(1)
