@@ -1,0 +1,72 @@
+// method 1  using pair and temp string
+
+class Solution {
+public:
+    string customSortString(string order, string s) {
+        string ans = "";
+        map<char, int> mp;
+         
+        // Count occurrences of characters in s
+        for(auto i : s)
+            mp[i]++;
+        
+        // Append characters from s in the order specified in 'order'
+        for(auto i : order){
+            if(mp.find(i) != mp.end()){
+                // Using pair constructor to create a pair of character and its frequency
+                pair<char, int> temp(i, mp[i]);
+                
+                // Constructing a string with 'temp.second' copies of 'temp.first
+                string tempstr(temp.second, temp.first);
+                
+                // Appending the constructed string to 'ans'
+                ans += tempstr;
+               
+                // Erasing the character from map as it's been processed
+                mp.erase(i);
+            }
+        }
+
+        // Append remaining characters from s
+        for(auto i : mp){
+            // Constructing a string with 'i.second' copies of 'i.first'
+            string str(i.second, i.first);
+
+            // Appending the constructed string to 'ans'
+            ans += str;
+        }
+
+        return ans;
+    }
+};
+
+// method 2 using append function
+
+class Solution {
+public:
+    string customSortString(string order, string s) {
+        string ans = "";
+        map<char, int> mp;
+        
+        // Count occurrences of each character in s
+        for(auto i : s)
+            mp[i]++;
+        
+        // Sort s based on the custom order
+        for(auto i : order){
+            if(mp.find(i) != mp.end()){
+                // Append i to ans mp[i] times
+                ans.append(mp[i], i);
+
+                mp.erase(i); // Remove the character from the map
+            }
+        }
+        
+        // Append the remaining characters not in the custom order
+        for(auto i : mp){
+            ans.append(i.second, i.first);
+        }
+
+        return ans;
+    }
+};
