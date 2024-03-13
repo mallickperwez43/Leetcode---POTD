@@ -1,0 +1,39 @@
+// method 1 using maths(arithematic progression)
+
+class Solution {
+public:
+    int pivotInteger(int n) {
+        float ans1=sqrt((n*(n+1))/2);
+        int ans2=int(ans1);
+        if (ans1-ans2==0)
+            return ans1;
+        return -1;
+    }
+};
+
+tc : O(1) sc : O(1)
+
+// method 2 using prifix sum
+
+class Solution {
+public:
+    int pivotInteger(int n) {
+        int leftSum = 0;     // Initialize the sum of elements from 1 to x
+        int rightSum = 0;    // Initialize the sum of elements from x to n
+        int totalSum = n * (n + 1) / 2; // The sum of all numbers from 1 to n
+       
+        // Iterate through all possible values of x 
+        for(int i = 1; i <= n; i++){
+            leftSum = i * (i + 1) / 2;   // Calculate the sum of elements from 1 to i using arithmetic progression formula
+            rightSum = totalSum - i * (i - 1) / 2;    // Calculate the sum of elements from i to n using arithmetic progression formula
+            
+            // Check if the sums are equal
+            if(leftSum == rightSum)
+                return i;   // Return i as the pivot integer
+        }
+
+        return -1;   // If no such integer exists, return -1
+    }
+};
+
+tc : O(n) sc : O(1) 
