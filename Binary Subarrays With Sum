@@ -1,0 +1,68 @@
+// method 1 hashing and prefix sum
+
+class Solution {
+public:
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+        // Create a hashmap to store the cumulative sums and their frequencies
+        unordered_map<int, int> map;
+         // Initialize variables to track the cumulative sum and the count of subarrays
+        int sum = 0, count = 0;
+        // Iterate through the input array
+        for(auto i : nums){
+            // Update the cumulative sum
+            sum += i;
+
+            // If the current cumulative sum equals the target goal,
+            // increment the count of subarrays
+            if(sum == goal)
+                count++;
+
+            / If there exists a previous cumulative sum such that
+            // (current sum - previous sum) equals the goal,
+            // increment the count by the frequency of that sum.
+            if(map.find(sum - goal) != map.end())
+                count += map[sum - goal];
+            
+            // Increment the frequency of the current cumulative sum
+            map[sum]++;
+        }
+        return count;
+    }
+};
+
+method 2 modified sliding window
+
+class Solution {
+public:
+    // Function to count the number of subarrays with at most the given sum (goal)
+    int atmost(vector<int>& nums, int goal){
+        // Initialize variables
+        int head = 0, tail = 0, sum = 0, size = 0;
+        
+        // Loop through the array
+        for(head = 0; head < nums.size(); head++){
+            // Update the sum by adding the current element
+            sum += nums[head];
+            
+            // Check if the sum exceeds the goal
+            // If yes, move the tail pointer until the sum is within the goal
+            while(sum > goal and tail <= head){
+                sum -= nums[tail];
+                tail++;
+            }
+            
+            // Update the size by adding the count of subarrays with at most the goal sum
+            size += head - tail + 1;
+        }
+        
+        // Return the count of subarrays with at most the goal sum
+        return size;
+    }
+    
+    // Function to count the number of subarrays with exactly the given sum (goal)
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+        // Return the difference between counts of subarrays with at most goal sum
+        // and subarrays with at most (goal - 1) sum
+        return atmost(nums, goal) - atmost(nums, goal - 1);
+    }
+};
