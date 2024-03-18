@@ -1,0 +1,36 @@
+class Solution {
+public:
+    int findMinArrowShots(vector<vector<int>>& points) {
+        // Sort the balloons based on their end points in ascending order
+        sort(points.begin(), points.end(), [](const vector<int> &a ,const vector<int> &b){
+            return a[1] < b[1];
+        });
+
+        // Initialize the number of arrows required and the end point of the first balloon
+        int arrows = 1;
+        int end = points[0][1];
+
+        // Iterate through each balloon
+        for(int i = 1; i < points.size(); i++){
+            int curStart = points[i][0]; // Start point of the current balloon
+            int curEnd = points[i][1]; // End point of the current balloon
+            
+            // If the end point of the last arrow is less than the start point of the current balloon,
+            // we need to shoot another arrow
+            if(end < curStart){
+                arrows++;
+                end = curEnd; // Update the end point of the arrow
+            }
+            // If the end point of the last arrow is greater than or equal to the start point of the current balloon,
+            // we can use the same arrow to burst both balloons, so we just need to update the end point of the arrow
+            else{
+                end = min(end, curEnd); // Update the end point of the arrow to the minimum of current end and balloon end
+            }
+        }
+        // Return the minimum number of arrows required
+        return arrows;
+    }
+};
+
+tc : O(nlogn)
+sc : O(1)
