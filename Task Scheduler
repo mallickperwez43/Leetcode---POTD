@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> freq(26, 0);
+        for(int i = 0; i < tasks.size(); i++){
+            freq[tasks[i] - 'A']++;
+        }
+        sort(freq.begin(), freq.end(), greater<int>());
+        int idle = (freq[0] - 1) * n;
+        for(int i = 1; i < 26; i++){
+            idle -= min(freq[i], freq[0] - 1);
+        }
+        return tasks.size() + max(0, idle);
+    }
+};
+
+/*
+ INTUTION
+
+ 1] We have to use idle maximum no of times so what we can do for this is use the element 
+    which occurs the maximum number of times 
+ 2] After getting the frequency we just need to make sure that we sort task in descending 
+    order
+ 3] So we get the char with max freqency on first index so we can calculate the the idle
+ 4] Idle = max freq - 1 times n that is cooling time
+ 5] Then we traverse the freq vector and try placing the char in between the idle for max char
+ 6] The best case can be we place in the task size and no idle left or add the idle lefts too
+
+*/ 
