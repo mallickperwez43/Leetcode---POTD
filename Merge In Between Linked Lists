@@ -1,0 +1,52 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeInBetween(ListNode* list1, int a, int b, ListNode* list2) {
+        // Create a temp node to store the head of first list
+        ListNode* temp = new ListNode(0);
+        
+        // Point temp to head of list 1 
+        temp -> next = list1;
+        
+        // Node pointer for traversal
+        ListNode* cur = temp;
+        // Traverse to (a - 1)th node 
+        for(int i = 0; i< a; i++){
+            cur = cur -> next;
+        }
+
+        // Store the reference of the node just before ath node
+        ListNode* beforeA = cur;
+        
+        // Now traverse to the bth node
+        for(int i = a; i < b + 1; i++){
+            cur = cur -> next;
+        }
+        
+        // Reference to the node after b
+        ListNode* afterB = cur -> next;
+        
+        // Now we have the pointer of both before a and after b
+        // Connect a-1 th node to list2
+        beforeA -> next = list2;
+        
+        // Traverse the end of the list2
+        while(list2 -> next != NULL){
+            list2 = list2 -> next;
+        }
+        
+        // Connect the last node of the list 2 with the b+1 th node
+        list2 -> next = afterB;
+
+        return temp -> next;
+    }
+};
