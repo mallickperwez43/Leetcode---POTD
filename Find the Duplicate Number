@@ -1,0 +1,65 @@
+// method 1 : Binary Search
+
+class Solution {
+private:
+    // Function to count the number of elements in nums that are less than or equal to the target
+    int countRange(vector<int>& nums, int target) {
+        int count = 0;
+        for (int num : nums) {
+            if (num <= target) {
+                count++;
+            }
+        }
+        return count;
+    }
+public:
+    // Function to find the duplicate number in the given vector nums
+    int findDuplicate(vector<int>& nums) {
+        int n = nums.size() - 1;
+        int low = 1, high = n;
+
+        // Binary search to find the duplicate number
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            int count = countRange(nums, mid); // Count the number of elements less than or equal to mid
+            if (count > mid) { // If count is greater than mid, duplicate lies in the lower half
+                high = mid;
+            } else { // Otherwise, duplicate lies in the upper half
+                low = mid + 1;
+            }
+        }
+
+        // At this point, low and high will converge to the duplicate number
+        return low;
+    }
+};
+TC : O(nlogn)
+SC : O(1)
+
+// Hare and Tortoise Cycle method
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        // Initialize slow and fast pointers
+        int slow = nums[0];
+        int fast = nums[nums[0]];
+
+        // Find the intersection point of the two pointers
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        }
+
+        // Find the entrance of the cycle
+        fast = 0;
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+
+        return slow;
+    }
+};
+TC : O(n)
+SC : O(1)
