@@ -1,0 +1,30 @@
+// CYCLIC SORT
+
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size();
+        
+        // Iterate through the array to place each element in its correct position
+        for (int i = 0; i < n; ++i) {
+            while (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
+                // Swap the element at index 'i' with the element at index 'nums[i] - 1'
+                swap(nums[i], nums[nums[i] - 1]);
+            }
+        }
+        
+        // Iterate through the array again to find the smallest positive integer that is not present
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] != i + 1) {
+                // If the element at index 'i' is not equal to 'i + 1', return 'i + 1' (smallest positive integer)
+                return i + 1;
+            }
+        }
+        
+        // If all positive integers from 1 to 'n' are present, return 'n + 1'
+        return n + 1;
+    }
+};
+
+TC : O(N)
+SC : O(1)
