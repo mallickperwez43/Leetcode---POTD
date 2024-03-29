@@ -1,0 +1,41 @@
+class Solution {
+public:
+    long long countSubarrays(vector<int>& nums, int k) {
+        // Find the maximum element in the nums array
+        int maxElement = INT_MIN;
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i] >= maxElement)
+                maxElement = nums[i];
+        }
+
+        // Initialize variables for left pointer, right pointer, maximum frequency, and answer
+        long long left = 0, right = 0, maxFreq = 0 ,ans = 0;
+        
+        // Loop until the right pointer reaches the end of the nums array
+        while(right < nums.size()){
+            // If the element at the right pointer is the maximum element, increment maxFreq
+            if(nums[right] == maxElement)
+                maxFreq++;
+            
+            // While the maximum frequency is equal to k
+            while(maxFreq == k){
+                // If the element at the left pointer is the maximum element, decrement maxFreq
+                if(nums[left] == maxElement)
+                    maxFreq--;
+                
+                // Move the left pointer to the right
+                left++;
+            }
+
+            // Move the right pointer to the right
+            right++;
+                   
+            // Add the position of the left pointer to the answer
+            ans += left;
+        }
+        // Return the final answer
+        return ans;
+    }
+};
+TC : O(n)
+SC : O(1)
