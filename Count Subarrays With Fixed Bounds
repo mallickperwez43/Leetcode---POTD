@@ -1,0 +1,40 @@
+class Solution {
+public:
+    long long countSubarrays(vector<int>& nums, int minK, int maxK) {
+        // answer variable
+        long long ans = 0 ;
+
+        // left is used for last occurance of minK
+        // right is used for last occurance of maxK
+        // badIdx is used for last occurance of element out of range
+        int left = -1, right = -1, badIdx = -1;
+        
+        // traverse the array
+        for(int i = 0; i < nums.size(); i++){
+            
+            // if any element is out bound record its last occurance
+            if(nums[i] < minK or nums[i] > maxK){
+                badIdx = i;
+            }    
+            // last occurance of minK
+            if(nums[i] == minK){
+                left = i;
+            }
+            // last occurance of maxK
+            if(nums[i] == maxK){
+                right = i;
+            }
+            
+            // 0 -> edge case when element out of bound lies in between the range
+            // no subarray can be formed
+            
+            // either on the rightside or leftside of the bound so last occurance of minK or maxK
+            // minus last occurance of element out of bound
+            ans += max(0, min(left, right) - badIdx);
+        }
+        return ans;
+    }
+};
+
+TC : O(n)
+SC : O(1)
