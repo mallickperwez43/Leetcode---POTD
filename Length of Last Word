@@ -1,0 +1,50 @@
+// method 1
+class Solution {
+public:
+    int lengthOfLastWord(string s) {
+        int length = 0;  // Initialize length to store the length of the last word
+        int end = s.length() - 1;  // Initialize end to the index of the last character in the string
+        
+        // Ignore any trailing spaces by decrementing 'end'
+        while (s[end] == ' ') {
+            end--;
+        }
+
+        // Count the characters of the last word until a space or the beginning of the string is reached
+        while (end >= 0 && s[end] != ' ') {
+            length++;  // Increment length for each character of the last word
+            end--;     // Move to the previous character
+        }
+        
+        return length;  // Return the length of the last word
+    }
+};
+
+
+TC : O(n)
+SC : O(1)
+
+// method 2
+
+class Solution {
+public:
+    int lengthOfLastWord(string s) {
+        int length = 0;  // Initialize the length of the last word
+        bool counting = false;  // Flag to indicate if we are currently counting characters
+        
+        // Iterate through the string backwards
+        for(int i = s.length() - 1; i >= 0; i--) {
+            if(s[i] != ' ') {  // If the current character is not a space
+                counting = true;  // Set counting to true to start counting
+                length++;  // Increment the length of the last word
+            } else if(counting) {  // If we encounter a space after counting has started
+                break;  // Exit the loop since we've reached the end of the last word
+            }
+        }
+        
+        return length;  // Return the length of the last word
+    }
+};
+
+TC : O(n)
+SC : O(1)
