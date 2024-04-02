@@ -1,0 +1,24 @@
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        // Check if the lengths of both strings are equal
+        if(s.length() != t.length())
+            return false;
+        
+        // Initialize vectors to keep track of character frequencies
+        vector<int> freqS(127, 0), freqT(127, 0);
+
+        // Iterate over each character index in the strings
+        for(int i = 0; i < s.length(); i++){
+            // Check if the positions of characters in their respective strings differ
+            if(freqS[s[i]] != freqT[t[i]])
+                return false;
+            
+            // Update the frequencies of characters in their respective vectors
+            freqS[s[i]] = i + 1;
+            freqT[t[i]] = i + 1;
+        }
+        // If no incorrect mappings are found, return true
+        return true;
+    }
+}; 
