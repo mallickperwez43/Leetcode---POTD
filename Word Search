@@ -1,0 +1,60 @@
+class Solution {
+private:
+    bool isPossible(int row, int col, int wordIdx, vector<vector<char>>& board, string &word){
+        // base case
+        // if index and string length is equal we found a word
+        if(wordIdx == word.length())
+            return true;
+
+        // out of boundary conditons
+        if(row < 0 or row >= board.size() or col < 0 or col >= board[0].size() or 
+            board[row][col] != word[wordIdx])
+        {
+            return false;
+        }
+        
+        // store the cur character and replace it with '~' 
+        // to keep recors that its visited once
+        char curCh = board[row][col];
+        board[row][col] = '~';
+        
+        // all possible directions
+                          // up    down    left     right
+        int dirn[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        
+        // traverse the dirn matrix and calculate newRow and newCol
+        // and check if we can traverse found the character of the word anywhere
+        for(auto dir : dirn){
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+            if(isPossible(newRow, newCol, wordIdx + 1, board, word)){
+                return true;
+            }
+        }
+        
+        // backtrack
+        // while returning place the character that is replaced by '~'
+        board[row][col] = curCh; 
+        // not found the word
+        return false; 
+    }
+public:
+    bool exist(vector<vector<char>>& board, string word) {
+        int m = board.size();
+        int n = board[0].size();
+        
+        // traverse every character and check recursively if possible to go ahead
+        for(int row = 0; row < m; row++){
+            for(int col = 0; col < n; col++){
+                if(isPossible(row, col, 0, board, word)){
+                    return true;
+                }
+            }
+        }
+        // word not found
+        return false;
+    }
+};
+
+// TC : O(m * n * (3 ^ k))
+// SC : O(k)
