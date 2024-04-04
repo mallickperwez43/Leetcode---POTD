@@ -1,0 +1,53 @@
+// method 1 -> stack
+
+class Solution {
+public:
+    int maxDepth(string s) {
+        stack<char> st; // Stack to keep track of opening parentheses
+        int ans = 0, count = 0; // Initialize the maximum depth and the current count of parentheses
+
+        // Iterate through the string
+        for(int i = 0; i < s.length(); i++) {
+            if(s[i] == '(') { // If current character is an opening parenthesis
+                st.push(s[i]); // Push it onto the stack
+                count++; // Increment the count of opening parentheses
+                ans = max(ans, count); // Update the maximum depth if needed
+            }             
+
+            if(!st.empty() and s[i] == ')') { // If current character is a closing parenthesis and there's an opening parenthesis in the stack
+                count--; // Decrement the count of opening parentheses
+                st.pop(); // Pop the corresponding opening parenthesis from the stack
+            }
+        }
+
+        return ans; // Return the maximum depth
+    }
+};
+TC : O(n)
+SC : O(n)
+
+// method 2 -> variables
+
+class Solution {
+public:
+    int maxDepth(string s) {
+        int ans = 0, count = 0; // Initialize the maximum depth and the current count of parentheses
+
+        // Iterate through the string
+        for(int i = 0; i < s.length(); i++) {
+            if(s[i] == '(') { // If current character is an opening parenthesis
+                count++; // Increment the count of opening parentheses
+                ans = max(ans, count); // Update the maximum depth if needed
+            }             
+
+            if(s[i] == ')') { // If current character is a closing parenthesis
+                count--; // Decrement the count of opening parentheses
+            }
+        }
+
+        return ans; // Return the maximum depth
+    }
+};
+
+TC : O(n)
+SC : O(1)
