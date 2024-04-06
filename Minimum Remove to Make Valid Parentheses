@@ -1,0 +1,93 @@
+// method 1 : stack
+
+class Solution {
+public:
+    string minRemoveToMakeValid(string s) {
+        stack<int> st; // Stack to store indices of opening parentheses
+
+        // Step 1: Find and mark unbalanced closing parentheses
+        for(int i = 0; i < s.size(); i++) {
+            if (s[i] == '(') {
+                st.push(i); // Add index of opening parentheses to the stack
+            }
+            else if (s[i] == ')') {
+                if (st.empty()) {
+                    s[i] = '\$'; // Mark unbalanced closing parentheses with '\$'
+                }
+                else {
+                    st.pop(); // Match closing parentheses with the top of the stack
+                }
+            }
+        }
+
+        // Step 2: Mark remaining unbalanced opening parentheses
+        while (!st.empty()) {
+            s[st.top()] = '\$'; // Mark the remaining unbalanced opening parentheses with '\$'
+            st.pop();
+        }
+
+        // Step 3: Remove marked characters ('\$') and construct the final string
+        string ans;
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] != '\$') {
+                ans += s[i]; // Append non-marked characters to the result string
+            }
+        }
+        return ans;
+    }
+};
+TC : O(n)
+SC : O(n)
+
+// method 2 : wothout extra space 
+
+class Solution {
+public:
+    string minRemoveToMakeValid(string s) {
+        int count = 0;
+
+        // Step 1: Mark unbalanced closing parentheses from left to right
+        for(int i = 0; i < s.size(); i++) {
+            if (s[i] == '(') {
+                count++;
+            }
+            else if (s[i] == ')') {
+                if (count == 0) {
+                    s[i] = '\$'; // Mark unbalanced closing parentheses with '\$'
+                }
+                else {
+                    count--; // Match closing parentheses with opening parentheses
+                }
+            }
+        }
+
+        count = 0;
+        
+        // Step 2: Mark unbalanced opening parentheses from right to left
+        for(int i = s.size() - 1; i >= 0; i--) {
+            if (s[i] == ')') {
+                count++;
+            }
+            else if (s[i] == '(') {
+                if (count == 0) {
+                    s[i] = '\$'; // Mark unbalanced opening parentheses with '\$'
+                }
+                else {
+                    count--; // Match opening parentheses with closing parentheses
+                }
+            }
+        }
+
+        // Step 3: Remove marked characters ('\$') and construct the final string
+        string ans = "";
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] != '\$') {
+                ans += s[i]; // Append non-marked characters to the result string
+            }
+        }
+        return ans;
+    }
+};
+
+TC : O(n)
+SC : O(1)
