@@ -1,0 +1,59 @@
+class Solution {
+public:
+    bool checkValidString(string s) {
+        int cnt = 0, cntstar = 0;
+
+        // Forward pass to check for unbalanced ')' parentheses
+        for(int i = 0; i < s.size(); i++){
+            if(s[i] == '(') {
+                cnt++; // Increment count for '('
+            }
+            else if(s[i] == '*') {
+                cntstar++; // Increment count for '*' (wildcard)
+            }
+            else if(s[i] == ')'){
+                if(cnt == 0){
+                    // If no corresponding '(' to match, try using a '*' as '('
+                    if(cntstar > 0){
+                        cntstar--;
+                    }
+                    else{
+                        return false; // No valid '(' or '*' to balance ')'
+                    }
+                }
+                else{
+                    cnt--; // Match ')' with '('
+                }
+            }
+        }
+
+        cnt = 0;
+        cntstar = 0;
+
+        // Backward pass to check for unbalanced '(' parentheses
+        for(int i = s.size() - 1; i >= 0; i--){
+            if(s[i] == ')') {
+                cnt++; // Increment count for ')'
+            }
+            else if(s[i] == '*') {
+                cntstar++; // Increment count for '*' (wildcard)
+            }
+            else if(s[i] == '('){
+                if(cnt == 0){
+                    // If no corresponding ')' to match, try using a '*' as ')'
+                    if(cntstar > 0){
+                        cntstar--;
+                    }
+                    else{
+                        return false; // No valid ')' or '*' to balance '('
+                    }
+                }
+                else{
+                    cnt--; // Match '(' with ')'
+                }
+            }
+        }
+
+        return true; // All parentheses are balanced
+    }
+};
