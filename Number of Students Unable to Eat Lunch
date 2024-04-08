@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int countStudents(vector<int>& students, vector<int>& sandwiches) {
+        int circleStudentCount = 0, squareStudentCount = 0;
+
+        // Count the number of students preferring circular and square sandwiches
+        for (auto i : students) {
+            if (i == 0)
+                circleStudentCount++;
+            else
+                squareStudentCount++;
+        }
+
+        // Iterate through the sandwiches and serve students accordingly
+        for (auto it : sandwiches) {
+            if (it == 0) {
+                if (circleStudentCount > 0)
+                    circleStudentCount--; // Serve a circular sandwich
+                else
+                    break; // No more circular sandwiches can be served
+            } else {
+                if (squareStudentCount > 0)
+                    squareStudentCount--; // Serve a square sandwich
+                else
+                    break; // No more square sandwiches can be served
+            }
+        }
+
+        // Return the sum of students who couldn't eat
+        return circleStudentCount + squareStudentCount;
+    }
+};
