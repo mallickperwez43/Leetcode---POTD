@@ -1,0 +1,32 @@
+class Solution {
+public:
+    // Function to calculate the time required to buy tickets
+    // Parameters:
+    //   - tickets: A vector containing the number of tickets at each position
+    //   - k: The position to buy a ticket
+    // Returns:
+    //   - The total time required to buy tickets
+    int timeRequiredToBuy(vector<int>& tickets, int k) {
+        // Get the number of tickets to buy at position k
+        int ticketToBuy = tickets[k];
+        // Initialize the total time
+        int time = 0;
+
+        // Iterate through all positions
+        for(int i = 0; i < tickets.size(); i++){
+            // For positions before or equal to k
+            if(i <= k){
+                // Buy tickets either at position i or k, whichever is smaller
+                time += min(ticketToBuy, tickets[i]);
+            }
+            // For positions after k
+            else{
+                // If the number of tickets to buy at position k is greater than 1,
+                // buy one less ticket at position k to ensure fairness
+                time += min(ticketToBuy - 1, tickets[i]);
+            }
+        }
+        // Return the total time required to buy tickets
+        return time;
+    }
+};
