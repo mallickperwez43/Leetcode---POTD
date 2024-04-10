@@ -1,0 +1,61 @@
+// method 1 -> queue
+class Solution {
+public:
+    vector<int> deckRevealedIncreasing(vector<int>& deck) {
+        // Step 1: Sort the deck in increasing order
+        sort(deck.begin(), deck.end());
+        
+        // Step 2: Initialize a queue to store indexes and a vector to store the final result
+        queue<int> indexes;
+        int n = deck.size();
+        for(int i = 0; i < n; i++)
+            indexes.push(i);
+        vector<int> ans(n);
+
+        // Step 3: Iterate through the sorted deck
+        for(auto it : deck){
+            // Step 4: Place the current card in the revealed position
+            ans[indexes.front()] = it;
+            indexes.pop();
+
+            // Step 5: If there are remaining unrevealed cards, move the next index to the back of the queue
+            if(!indexes.empty()){
+                int front = indexes.front();
+                indexes.push(front);
+                indexes.pop();
+            }
+        }
+
+        return ans;
+    }
+};
+
+// method 2 -> deque
+class Solution {
+public:
+    vector<int> deckRevealedIncreasing(vector<int>& deck) {
+        // Step 1: Sort the deck in increasing order
+        sort(deck.begin(), deck.end());
+        
+        // Step 2: Initialize a deque to simulate the process of revealing cards
+        deque<int> revealed;
+        int n = deck.size();
+
+        // Step 3: Iterate through the sorted deck in reverse order
+        for(int i = n - 1; i >= 0; i--){
+            // Step 4: Simulate the process of revealing cards
+            if(!revealed.empty()){
+                int back_card = revealed.back();
+                revealed.pop_back();
+                revealed.push_front(back_card);
+            }
+            // Push the current card to the front of the deque
+            revealed.push_front(deck[i]);
+        }
+        
+        // Step 5: Convert the deque to a vector to return the result
+        vector<int> ans(revealed.begin(), revealed.end());
+
+        return ans;
+    }
+};
