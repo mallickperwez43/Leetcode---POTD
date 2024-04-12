@@ -1,0 +1,74 @@
+// method 1 -> prefix suffix vectors
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size();
+
+        // Arrays to store the maximum height encountered from the left and right sides respectively
+        vector<int> prefix(n), suffix(n);
+        
+        // Initialize the first elements of prefix and suffix arrays
+        prefix[0] = height[0];
+        suffix[n - 1] = height[n - 1];
+
+        // Calculate the maximum height encountered from the left for each position
+        for(int i = 1; i < n; i++){
+            prefix[i] = max(height[i], prefix[i - 1]);
+            // Calculate the maximum height encountered from the right for each position
+            suffix[n - 1 - i] = max(height[n - 1 - i], suffix[n - i]);
+        }
+
+        int ans = 0;
+
+        // Calculate the trapped water for each position excluding the first and last positions
+        for(int i = 1; i < n - 1; i++){
+            ans += min(prefix[i], suffix[i]) - height[i];
+        }
+
+        return ans;
+    }
+};
+TC : O(n)
+SC : O(n)
+
+// method 2 -> variables
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        // Initialize left and right pointers
+        int left = 0, right = height.size() - 1;
+        int ans = 0; // Initialize the variable to store the total trapped water
+        int leftMax = 0, rightMax = 0; // Initialize variables to track the maximum height encountered from the left and right sides respectively
+        
+        // Loop until left pointer crosses the right pointer
+        while(left <= right){
+            // Check which side has a smaller height, and update the respective maximum
+            if(height[left] <= height[right]){
+                // If the current height is greater than or equal to the left maximum, update the left maximum
+                if(height[left] >= leftMax) 
+                    leftMax = height[left];
+                // Otherwise, calculate the trapped water based on the difference between left maximum and current height
+                else
+                    ans += leftMax - height[left];
+
+                left++; // Move the left pointer
+            }
+            else{
+                // If the current height is greater than or equal to the right maximum, update the right maximum
+                if(height[right] >= rightMax)
+                    rightMax = height[right];
+                // Otherwise, calculate the trapped water based on the difference between right maximum and current height
+                else
+                    ans += rightMax - height[right];
+
+                right--; // Move the right pointer
+            }
+        }
+        return ans; // Return the total trapped water
+    }
+};
+
+TC : O(n)
+SC : O(1)
