@@ -1,0 +1,122 @@
+class Solution {
+private:
+    vector<int> nextSmallerElement(vector<int>& arr){
+        // take a stack and push indexes in stack
+        stack<int> st;
+        st.push(-1);  // staring point 
+        int n = arr.size();
+        vector<int> ans(n);
+    
+        // iterating reversly because we need next smaller element
+        // for any instance i we have the next stored for i + 1
+        for(int i = n - 1; i >= 0; i--){
+            int cur = arr[i];
+            
+            // if current index of element in array in greater than or equal to
+            // current element keep poping
+            while(st.top() != -1 and arr[st.top()] >= cur){
+                st.pop();
+            }
+            
+            // store index
+            ans[i] = st.top();
+            st.push(i);  // push cur index;
+        }
+        return ans;
+    }
+
+    vector<int> prevSmallerElement(vector<int> &arr){
+        // take a stack and push indexes in stack
+        stack<int> st;
+        st.push(-1); // starting point
+        int n = arr.size();
+        vector<int> ans(n);
+        
+        // iterating forwadly because we need prev smaller element
+        // for any instance i we have the prev stored for i - 1
+        for(int i = 0; i < n; i++){
+            int cur = arr[i];
+            
+            // if current index of element in array in greater than or equal to
+            // current element keep poping
+            while(st.top() != -1 and arr[st.top()] >= cur){
+                st.pop();
+            }
+            
+            // store index
+            ans[i] = st.top();
+            st.push(i); // push cur index;
+        }
+        return ans;
+    }
+
+    int largestRectangleArea(vector<int> &heights){
+        int n = heights.size();
+        
+        // storing the next smaller element indexes 
+        vector<int> next(n);
+        next = nextSmallerElement(heights);
+        
+        // storing the previous smaller element indexes
+        vector<int> prev(n);
+        prev = prevSmallerElement(heights);
+         
+        int area = INT_MIN; 
+        for(int i = 0; i < n; i++){
+            int length = heights[i];
+            
+            // when edges so make it equal to size
+            if(next[i] == -1)
+                next[i] = n;
+            
+            // for calculation of breadth 
+            // we took indexes  
+            // next[i] - prev[i] -> breadth
+            // but 0 based indexing so - 1
+            int breadth = next[i] - prev[i] - 1;
+            
+            // maximizing the area
+            int newArea = length * breadth;
+            area = max(area, newArea); 
+        }
+        return area;
+    }
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        // base case
+        if(matrix.empty())
+           return 0;
+        
+        int row = matrix.size();
+        int col = matrix[0].size();
+
+        vector<vector<int>> M(row, vector<int> (col, 0));
+        
+        // convert char matrix into int matrix
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                M[i][j] = matrix[i][j] - '0';
+            }
+        }
+        
+        // calculate area for first row
+        int area = largestRectangleArea(M[0]);  // treating every row like an histogram
+        
+        // calculate area for remaining rows
+        for(int i = 1; i < row; i++){
+            for(int j = 0; j < col; j++){
+                // adding the previous and cur row element as considering like a histogram
+                if(M[i][j] != 0)
+                    M[i][j] = M[i][j] + M[i - 1][j];      
+            }
+            // update area to maximize it
+            area = max(area, largestRectangleArea(M[i]));
+        }
+    
+        // the maximum area possible
+        return area;
+    }
+};
+
+TC : O(rows * cols)
+SC : O(rows * cols)
