@@ -1,0 +1,52 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+private:
+    // This function performs depth-first search (DFS) to traverse the binary tree.
+    // It calculates the sum of left leaves in the tree.
+    // Parameters:
+    // - node: Current node being visited.
+    // - isLeft: Indicates whether the current node is a left child of its parent.
+    // Time Complexity: O(n), where n is the number of nodes in the tree.
+    //                    Each node is visited exactly once.
+    // Space Complexity: O(h), where h is the height of the tree.
+    //                    The maximum depth of the function call stack is equal to the height of the tree.
+    int dfs(TreeNode* node, bool isLeft){
+        // Base case: If the current node is NULL, return 0.
+        if(node == NULL){
+            return 0;
+        }
+
+        // If the current node is a leaf node and is a left child, return its value.
+        if(!node -> left and !node -> right){
+            return isLeft ? node -> val : 0;
+        }
+
+        // Recursively calculate the sum of left leaves of the left and right subtrees.
+        int leftSum = dfs(node -> left, true);
+        int rightSum = dfs(node -> right, false);
+
+        // Return the sum of left leaves of the current subtree.
+        return leftSum + rightSum;
+    }
+public:
+    // This function calculates the sum of left leaves in a binary tree.
+    // It calls the private dfs function to perform the DFS traversal.
+    // Parameter:
+    // - root: Root of the binary tree.
+    // Time Complexity: O(n), where n is the number of nodes in the tree.
+    // Space Complexity: O(h), where h is the height of the tree.
+    int sumOfLeftLeaves(TreeNode* root) {
+        // Call the dfs function with the root node and isLeft=false (since root is not a left child).
+        return dfs(root, false);
+    }
+};
