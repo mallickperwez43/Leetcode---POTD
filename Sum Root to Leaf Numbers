@@ -1,0 +1,40 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+private:
+    void helper(TreeNode* root, int num, int &total){
+        // base case
+        if(root == NULL)
+            return;
+        
+        // update the num until a path found
+        num = num * 10 + root -> val;
+        
+        // if a leaf node encountered
+        // a path completed
+        // add it to totol and return
+        if(!(root -> left) and !(root -> right)){
+            total += num;
+            return;
+        }
+        
+        // recursive calls
+        helper(root -> left, num, total);
+        helper(root -> right, num, total);
+    }
+public:
+    int sumNumbers(TreeNode* root) {
+        int total = 0;
+        helper(root, 0, total);
+        return total;
+    }
+};
