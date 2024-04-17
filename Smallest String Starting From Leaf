@@ -1,0 +1,41 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    // the maximum char can be z and ~ has ASCII value 126 whilez has 122
+    string ans = "~";
+
+    void helper(TreeNode* root, string s){
+        // base case 1  -> NULL 
+        if(root == NULL) return;
+
+        // base case 2 -> leaf node found 
+        if(root -> left  == NULL and root -> right == NULL){
+            ans = min(ans, char('a' + root -> val) + s);  // we needed bottom up approach 
+                                                          // so we first added the root char
+                                                          // then the string s thats formed till
+                                                          // now
+        }                                                  
+           
+        // recursive calls
+        helper(root -> left, char('a' + root -> val) + s);
+        helper(root -> right, char('a' + root -> val) + s);
+    }
+
+    string smallestFromLeaf(TreeNode* root) {
+        helper(root, "");
+        return ans;   // returns the lexographically minimum string
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
