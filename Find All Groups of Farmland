@@ -1,0 +1,61 @@
+class Solution {
+private:
+    // Helper function to perform Depth First Search (DFS) to find farmland
+    // Parameters:
+    // - land: The 2D vector representing the land
+    // - startX: Starting X-coordinate of the farmland
+    // - startY: Starting Y-coordinate of the farmland
+    // Returns:
+    // A vector containing starting and ending coordinates of the farmland
+    vector<int> dfs(vector<vector<int>>& land, int startX, int startY){
+        // Initialize ending coordinates to starting coordinates
+        int endX = startX;
+        int endY = startY;
+        
+        // Store the starting coordinates
+        vector<int> v;
+        v.push_back(startX);
+        v.push_back(startY);
+        
+        // Find the ending coordinates in both X and Y directions
+        while(endX < land.size() and land[endX][startY] == 1) endX++;  // Move down
+        while(endY < land[0].size() and land[startX][endY] == 1) endY++; // Move right
+        
+        // Store the ending coordinates
+        v.push_back(endX - 1);
+        v.push_back(endY - 1);
+
+        // Mark the visited cells as 0 (visited)
+        for(int i = startX; i < endX; i++){
+            for(int j = startY; j < endY; j++){
+                land[i][j] = 0;
+            }
+        }
+
+        return v;
+    }
+public:
+    // Function to find farmland in the given land
+    // Parameters:
+    // - land: The 2D vector representing the land
+    // Returns:
+    // A 2D vector containing starting and ending coordinates of each farmland found
+    vector<vector<int>> findFarmland(vector<vector<int>>& land) {
+        vector<vector<int>> ans;
+
+        // Traverse through each cell in the land
+        for(int i = 0; i < land.size(); i++){
+            for(int j = 0; j < land[0].size(); j++){
+                // If the cell represents farmland (1), perform DFS to find its extent
+                if(land[i][j] == 1){
+                    vector<int> res = dfs(land, i, j); // DFS to find farmland extent
+                    ans.push_back(res); // Store starting and ending coordinates of farmland
+                }
+            }
+        }
+        return ans; // Return the vector containing farmland coordinates
+    }
+};
+
+// TC : O(n * m)
+// SC : O(n * m)
