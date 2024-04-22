@@ -1,0 +1,85 @@
+// method 1 -> BFS
+
+class Solution {
+public:
+    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        // step 1 : make adj list 
+        vector<vector<int>> adj(n);
+        for(auto edge : edges){
+            // bidirectional
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        } 
+
+        // step 2 : make a visited array
+        vector<bool> vis(n, false);
+
+        // step 3 : BFS
+        queue<int> q;
+        q.push(source); // starting the BFS from source node
+        vis[source] = true; // mark source as visited
+
+        while(!q.empty()){
+            int frontNode = q.front();
+            q.pop();
+
+            // check condition 
+            if(frontNode == destination)
+                return true;
+            
+            // check the adj nodes from the list
+            vector<int> adj_nodes = adj[frontNode];
+            for(int i = 0; i < adj_nodes.size(); i++){
+                if(!vis[adj_nodes[i]]){
+                    q.push(adj_nodes[i]);
+                    vis[adj_nodes[i]] = true;
+                }
+            }
+        }
+        return false; // source and destination arent the part of same connected component
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
+
+// method 2 -> DFS
+
+class Solution {
+private:
+    bool dfs(vector<vector<int>> &adj, unordered_set<int> &vis, int cur, int des){
+        // base case
+        if(cur == des)
+            return true;
+
+        // mark the current as visited
+        vis.insert(cur);
+
+        // check the adj_nodes fromt the list
+        for(auto adj_nodes : adj[cur]){
+            // if not visisted explore recursively
+            if(vis.find(adj_nodes) == vis.end()){
+                if(dfs(adj, vis, adj_nodes, des))
+                    return true;
+            }
+        }
+
+        return false;  // source and destination arent in the same connected component
+    }
+public:
+    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        // step 1 : make adj list (graph contruction)
+        vector<vector<int>> adj(n);
+        for(auto edge : edges){
+            // bidirectional 
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+
+        // step 2 : visited set
+        unordered_set<int> vis;
+
+        // step 3 : DFS
+        return dfs(adj, vis, source, destination);
+    }
+};
