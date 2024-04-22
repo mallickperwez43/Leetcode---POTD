@@ -1,0 +1,53 @@
+class Solution {
+public:
+    int openLock(vector<string>& deadends, string target) {
+        // step 1 : store the deadends
+        unordered_set<string> deadLocks = {deadends.begin(), deadends.end()};
+
+        if(deadLocks.count("0000")){
+            return -1;
+        }
+
+        // step 2 : BFS
+
+        queue<pair<string, int>> q;
+        q.push(make_pair("0000", 0));
+
+        // visisted set
+        unordered_set<string> vis;
+        vis.insert("0000");
+
+        while(!q.empty()){
+            pair<string, int> present = q.front();
+            q.pop();
+   
+            string curCombination = present.first;
+            int moves = present.second;
+
+            if(curCombination == target){
+                return moves;
+            }
+
+            // check for all 4 spaces for the next possible permutation
+            for(int i = 0; i < 4; i++){
+
+                // check for the next permutation by adding and subtracting by 1
+                for(int nextPermutation : {-1, 1}){
+                    int newDigit = (curCombination[i] - '0' + nextPermutation + 10) % 10;
+                    string newCombination = curCombination;
+                    newCombination[i] = '0' + newDigit;
+
+                    // push into queue
+                    if(vis.find(newCombination) == vis.end() and deadLocks.find(newCombination) == deadLocks.end()){
+                        vis.insert(newCombination);
+                        q.push({newCombination, moves + 1});
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+};
+
+TC : O(N + 4*10^4)
+SC : O(N + 10^4)
