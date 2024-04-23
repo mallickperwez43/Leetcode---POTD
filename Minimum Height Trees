@@ -1,0 +1,65 @@
+/* 
+INTUTION    
+    1] Which node should i pick so that i can minimize the height of the tree
+    2] If i go for the leaf node then tree would just revert that is root will become leaf 
+        and leaf would become root but my height still remains the same no use
+    3] So i see from observation that the most crowed node should be the tree so 
+        we can cut of the leaf nodes and just check the crowed ones to be the possible answer
+        and the possible nodes wont be more than 2 because if the n is even then the crowded ones are the mid and mid + 1
+        and if its odd  the only one the mid one
+*/
+
+class Solution {
+public:
+    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {
+        // base case 
+        if(n == 1) 
+           return {0};
+        
+        // step 1 : make the graph and store the indegree of every nodes
+        vector<vector<int>> adj(n); // graph
+        vector<int> indegree(n, 0), ans;  // indegree and ans vector
+        for(auto &edge : edges){
+           adj[edge[0]]. push_back(edge[1]);  // the graph is undirected
+           adj[edge[1]]. push_back(edge[0]);
+           indegree[edge[0]]++;   // stored the indegree
+           indegree[edge[1]]++;
+        }
+
+        // step 2 : push the leaf nodes into the queue for bfs
+        // basically try to cut out the leaf nodes so decrementing the count of indegree
+        queue<int> leaves;
+        for(int i = 0; i < n; i++){
+            // leaf found
+            if(indegree[i] == 1){
+                leaves.push(i);
+                indegree[i]--;   
+            } 
+        }
+
+        // step 3 : perform BFS and actively seeking 
+        // root nodes can possible become the leaf
+        // because that would give the minimum height (only root)
+        while(!leaves.empty()){
+            int size = leaves.size();
+            ans.clear(); // we are iterating for all the leaves so we clear the ans 
+                         // because we dont need that leaves 
+            for(int i = 0; i < size; i++){
+                int cur = leaves.front();
+                leaves.pop();
+
+                ans.push_back(cur);
+                for(auto child : adj[cur]){
+                    indegree[child]--; // cutting of the leaf
+                    if(indegree[child] == 1)  // while cutting the leaves if the parent becomes leaf -> possible answer
+                        leaves.push(child);   // push the child for next iteration
+                }
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(V + E)
+// SC : O(V + E)
