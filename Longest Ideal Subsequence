@@ -1,0 +1,37 @@
+class Solution {
+public:
+    int longestIdealString(string s, int k) {
+        // 1] create a 26 size vector fill with zero
+        //    initialize ans as zero
+        // 2] iterate every character of the string
+        //      get the index of that character
+        //      calculate the range 
+        //      -> loop for the range i - k to i + k
+        //           update the value at ith position in the vector
+        //       increment the value at ith pos by 1 self contribution
+        // 3]  get the maximum element from the vector by iterting it 
+        // return ans
+
+        vector<int> dp(26, 0);
+        int ans = 0;
+        int size = s.length();
+        for (auto& c : s) {
+            int i = c - 'a';
+            int left = max(0, i - k);
+            int right = min(i + k, 25);
+
+            for (int j = left; j <= right; j++) {
+                dp[i] =  max(dp[i], dp[j]);
+            }
+            dp[i] += 1;
+        }
+        
+        for(int i = 0; i < 26; i++){
+            ans = max(ans, dp[i]);
+        }
+        return ans;
+    }
+};
+
+// TC : O(26 * n)
+// SC : O(1)
