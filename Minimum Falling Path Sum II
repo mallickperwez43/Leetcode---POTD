@@ -1,0 +1,76 @@
+// recursion would give TLE
+
+class Solution {
+public:
+    int recur(vector<vector<int>>& grid, int i, int j){
+        if(i == grid.size())
+            return 0;
+        
+        int ans = INT_MAX;
+
+        for(int k = 0; k < grid[0].size(); k++){
+            if(j == k)
+                continue;
+            ans = min(ans, recur(grid, i + 1, k) + grid[i][j]);
+        }
+
+        return ans;
+    }
+    int minFallingPathSum(vector<vector<int>>& grid) {
+        int n = grid.size();
+        if(n == 1) 
+            return grid[0][0];
+        
+        int ans = INT_MAX;
+
+        // first loop of matric(row) -> assume
+        for(int j = 0; j < n; j++){
+            ans = min(ans, recur(grid, 0, j));
+        }
+        return ans;
+    }
+};
+
+// dp
+
+class Solution {
+public:
+    int minFallingPathSum(vector<vector<int>>& grid) {
+        int n = grid.size();
+
+        // base case
+        if(n == 1)
+            return grid[0][0];
+        
+        // 2d dp
+        vector<vector<int>> dp(n, vector<int>(n));
+        
+        // fill the first row of dp with the first row of grid
+        for(int col = 0; col < n; col++)
+            dp[0][col] = grid[0][col];
+        
+        // iteration 
+        for(int row = 1; row < n; row++){
+            for(int col = 0; col < n; col++){
+                int ans = INT_MAX;
+                for(int next = 0; next < n; next++){
+                    // dont take the similar col
+                    if(next == col)
+                        continue;
+                    
+                    ans = min(ans, dp[row - 1][next] + grid[row][col]);
+                }
+                dp[row][col] = ans;
+            }
+        }
+
+        int minSum = INT_MAX;
+        for(int col = 0; col < n; col++){
+            minSum = min(minSum, dp[n - 1][col]);
+        }
+        return minSum;
+    }
+};
+
+// TC : O(n ^ 3)
+// SC : O(n ^ 2)
