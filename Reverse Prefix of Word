@@ -1,0 +1,35 @@
+class Solution {
+public:
+    string reversePrefix(string word, char ch) {
+        // step 1 : set two pointers
+        int i = 0, j = 1;
+        
+        // step 2 : if ch has its first occurence at i or j th index
+        if(word[i] == ch) return word;
+        
+        if(word[j] == ch){
+            swap(word[i], word[j]);
+            return word;
+        }
+        
+        // step 3 : finding the first occurance of ch
+        while(j < word.length()){
+            if(word[j] == ch){
+                break;
+            }
+            j++;
+        }
+        
+        // step 4 : reversing the substring from beginning to first occurance
+        while(i <= j and j < word.size()){
+            swap(word[i], word[j]);
+            i++;
+            j--;
+        }
+
+        return word;
+    }
+};
+
+// TC : O(n)
+// SC : O(1)
