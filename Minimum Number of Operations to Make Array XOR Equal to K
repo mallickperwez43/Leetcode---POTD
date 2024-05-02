@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int minOperations(vector<int>& nums, int k) {
+        int n = nums.size();
+        
+        // XOR all the elements of the nums array and store the answer 
+        int ansXor = 0;
+        for(int i = 0; i < n; i++){
+            ansXor ^= nums[i];
+        }
+        
+        // initialize the count and count difference in bit level
+        int count = 0;
+        if(ansXor == k) return 0;  // already same
+        else{
+            while(ansXor != 0 or k != 0){
+                if((ansXor & 1) != (k & 1)){
+                    count++;
+                }
+                ansXor >>= 1;
+                k >>= 1;
+            }
+
+            return count;
+        }
+    }
+};
+
+// TC : O(n)
+// SC :O(1)
