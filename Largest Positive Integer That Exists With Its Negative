@@ -1,0 +1,92 @@
+// Method 1 - sort + 2 pointer
+class Solution {
+public:
+    int findMaxK(vector<int>& nums) {
+        // sorting 
+        sort(nums.begin(), nums.end());
+
+        // two pointers
+        int i = 0, j = nums.size() - 1;
+        while(i < j){
+            if(-nums[i] == nums[j]) return nums[j]; // found
+            else if(-nums[i] > nums[j]) i++;
+            else if(-nums[i] < nums[j]) j--;
+        }
+
+        return -1;
+    }
+};
+
+// TC : O(nlogn)
+// SC : O(logn)
+
+
+// method 2 - hashset 2 pass
+class Solution {
+public:
+    int findMaxK(vector<int>& nums) {
+        unordered_set<int> neg;
+        // storing only the negative 
+        for(int element : nums){
+            if(element < 0) neg.insert(element);
+        }
+
+        int ans = -1;
+        // checking for counter positive part
+        for(int element : nums){
+            if(element > 0 and neg.contains(-element)){
+                ans = max(ans, element);
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n + n)
+// SC : O(n)
+
+
+// method 3 - hashset 1 pass
+class Solution {
+public:
+    int findMaxK(vector<int>& nums) {
+        unordered_set<int> s;
+       
+        int ans = -1;
+        
+        // store all elements in set
+        // and check for the counter existance
+        // id it exists maximixe the answer
+        for(int element : nums){
+            if(s.contains(-element)) ans = max(ans, abs(element));
+            s.insert(element);
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
+
+
+// Method - 4 - boolean array
+class Solution {
+public:
+    int findMaxK(vector<int>& nums) {
+        vector<bool> vis(2001, false);
+        int ans = -1;
+        for(int element : nums){
+            // positve ones are stored from 0 to 1000 and 
+            // negative ones are stored from 1001 to 2000
+            if(vis[-element + 1000]) ans = max(ans, abs(element)); // if present maximize
+            vis[element + 1000] = true;  // put into boolean array
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n)
+// SC : O(2000 bits)
