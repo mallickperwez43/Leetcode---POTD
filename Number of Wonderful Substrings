@@ -1,0 +1,31 @@
+#define ll long long int
+
+class Solution {
+public:
+    long long wonderfulSubstrings(string word) {
+        unordered_map<ll, ll> mp;  // to store freq of every prefix pattern
+        mp[0] = 1;  // For a pattern of 00000....0 [10 times] what is the freq 
+        // in beginning no char is there -> count of all the char is 0 -> parity of all         
+        // the char is even
+        
+        ll prefixPattern = 0, ans = 0; // prefixPattern -> even hai to zero warna odd hai to one
+        for(auto c : word){
+            // next pattern by chaing parity
+                           // current pattern XOR Mask
+            prefixPattern = (prefixPattern ^ (1 << (c - 'a')));
+            ans += mp[prefixPattern]; // even pattern
+
+            // remaining 10 patterns
+            for(auto ch = 'a'; ch <= 'j'; ch++){
+                ll oddPrefixPattern = (prefixPattern ^ (1 << (ch - 'a')));
+                ans += mp[oddPrefixPattern];
+            }
+            mp[prefixPattern]++;
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n * 10)
+// SC : O(n)
