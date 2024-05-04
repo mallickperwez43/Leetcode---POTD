@@ -1,0 +1,64 @@
+// Method 1 : sorting 
+
+class Solution {
+public:
+    int numRescueBoats(vector<int>& people, int limit) {
+        sort(people.begin(), people.end()); // sort
+
+        int boatCount = 0, left = 0, right = people.size() - 1;
+        while(left <= right){
+            // both lite and heavy can placed
+            if(people[left] + people[right] <= limit){
+                left++;
+                right--;
+            }
+            else{ 
+                // only heavy could be placed
+                right--;
+            }
+            boatCount++;
+        }
+        return boatCount;
+    }
+};
+
+// TC : O(nlogn)
+// SC : O(1)
+
+// method 2 : count sort
+
+class Solution {
+public:
+    int numRescueBoats(vector<int>& people, int limit) {
+        // store the count of every occurance of people
+        vector<int> count(limit + 1, 0);
+        for(int p : people) count[p]++;
+        
+        // until count exist put it int right places
+        int index = 0;
+        for(int val = 1; val <= limit; val++){
+            while(count[val]-- > 0)
+                people[index++] = val;
+        }
+
+        // we have sorted it now in O(limit)
+
+        int boatCount = 0, left = 0, right = people.size() - 1;
+        while(left <= right){
+            // both lite and heavy can placed
+            if(people[left] + people[right] <= limit){
+                left++;
+                right--;
+            }
+            else{ 
+                // only heavy could be placed
+                right--;
+            }
+            boatCount++;
+        }
+        return boatCount;
+    }
+};
+
+// TC : O(limit)
+// SC : O(n)
