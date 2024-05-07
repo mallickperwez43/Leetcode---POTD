@@ -1,0 +1,61 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+
+/*
+    Approach
+    1] reverse the LL as we cannot traverse right to left
+    2] keep a counter of maximum value until current node 
+       so we can remove the nodes that are less than max
+    3] after all iteration again reverse the LL and return the answer
+    
+*/
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* prev = nullptr;
+        ListNode* current = head;
+
+        while (current != nullptr) {
+            ListNode* nextNode = current->next;
+            current->next = prev;
+            prev = current;
+            current = nextNode;
+        }
+
+        return prev;
+    }
+    
+    ListNode* removeNodes(ListNode* head) {
+        if(head == NULL) return head;
+        ListNode* newHead = reverseList(head);
+
+        ListNode* current = newHead;
+        int maxSoFar = INT_MIN;
+        ListNode* prev = nullptr;
+
+        while (current != nullptr) {
+            if (current->val < maxSoFar) {
+                prev->next = current->next;
+            } else {
+                maxSoFar = current->val;
+                prev = current;
+            }
+            current = current->next;
+        }
+
+        newHead =reverseList(newHead);
+
+        return newHead;
+    }
+};
+
+// TC : O(n)
+// SC : O(1)
