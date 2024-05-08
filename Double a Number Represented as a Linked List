@@ -1,0 +1,156 @@
+// Method 1 : Reversing
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+private:
+    ListNode* reverseList(ListNode* head){
+        ListNode *cur = head, *prev = NULL, *ahead = NULL;
+
+        while(cur != NULL){
+            ahead = cur -> next;
+            cur -> next = prev;
+            prev = cur;
+            cur = ahead;
+        }
+
+        return prev;
+    }
+public:
+    ListNode* doubleIt(ListNode* head) {
+        // step 1 : Reverse the LL
+        ListNode* newHead = reverseList(head);
+        
+        // step 2 : Maintain a carry and two nodes for traversal
+        int carry = 0;
+        ListNode *cur = newHead, *prev = NULL;
+        
+        // step 3 : traverse the reversed LL and and double the value in place while 
+        //         maintaining the carry  
+        while(cur != NULL){
+            int updatedVal = cur -> val * 2 + carry;
+
+            cur -> val = updatedVal % 10;
+
+            carry = updatedVal / 10;
+
+            prev = cur;
+            cur = cur -> next;
+        }
+        
+        // step 4 : if the carry is left add an extra node to the end
+        if(carry != 0){
+            ListNode* carryNode = new ListNode(carry);
+            prev -> next = carryNode;
+            carryNode -> next = NULL;
+        }
+        
+        // step 5 : reverse the LL to get the final ans
+        ListNode *ans = reverseList(newHead);
+
+        return ans;
+    }
+};
+
+// TC : O(3n) ~ O(n)
+// SC : O(1)
+
+
+// Method 2 : Two pointers
+
+class Solution {
+public:
+    ListNode* doubleIt(ListNode* head) {
+        // step 1 : maintain two pointers
+        ListNode *cur = head, *prev = NULL;
+        
+        // step 2 : traverse the list calculate new value and if its range update inplace
+        //     else carry has two cases when its the first one make new node and update head or 
+        //     simply add the it to prev
+        while(cur != NULL){
+            int newVal = cur -> val * 2;
+            
+            if(newVal < 10){
+                // carry doesnt exist
+                cur -> val = newVal;
+            }
+            else{ 
+                // carry exist
+                cur -> val = newVal % 10;
+
+                // if new node to be added
+                if(prev == NULL){
+                    ListNode *newNode = new ListNode(1);
+                    head = newNode;
+                    head -> next = cur;
+                }
+                else{
+                    prev -> val += 1;
+                }
+            }
+            
+            // move pointers
+            prev = cur;
+            cur = cur -> next;
+        }
+        
+        // step 3 : return head
+        return head;
+    }
+};
+
+// TC : O(n)
+// SC : O(1)
+
+
+// Method 3 : one pointer
+
+class Solution {
+public:
+    ListNode* doubleIt(ListNode* head) {
+        // step 1 : maintain single pointer 
+        ListNode *cur = head;
+        
+        // step 2 : traverse the list calculate new value and if its range update inplace
+        //     else carry when its the first one make new node and update head  
+        while(cur != NULL){
+            int newVal = cur -> val * 2;
+            
+            if(newVal < 10){
+                // carry doesnt exist
+                cur -> val = newVal;
+            }
+            else{ 
+                // carry exist
+                cur -> val = newVal % 10;
+
+                // if new node to be added
+                if(cur == head){
+                    ListNode *newNode = new ListNode(1);
+                    head = newNode;
+                    head -> next = cur;
+                }
+            }
+            
+            // ask next if it would give me carry if yess then add it now only
+            if(cur -> next != NULL and cur -> next -> val * 2 >= 10)
+                cur -> val += 1; 
+
+            cur = cur -> next;
+        }
+        
+        // step 3 : return head
+        return head;
+    }
+};
+
+// TC : O(n)
+// SC : O(1)
