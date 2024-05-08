@@ -1,0 +1,108 @@
+// method 1 : sort decreasing + map
+
+class Solution {
+public:
+    vector<string> findRelativeRanks(vector<int>& score) {
+        vector<string> rankName = {"Gold Medal", "Silver Medal", "Bronze Medal"};
+        
+        // copy the input 
+        vector<int> copyScore = score;
+        
+        // sort in decreasing order
+        sort(copyScore.begin(), copyScore.end(), greater<int>());
+        
+        // map the score to the rank after sorting 
+        unordered_map<int, int> scoreToRank;
+        int rankCt = 1;
+        for(auto sc : copyScore) 
+           scoreToRank[sc] = rankCt++;
+        
+        // form ans
+        vector<string> ans(score.size()); 
+        for(int i = 0; i < score.size(); i++){
+            int actualRank = scoreToRank[score[i]];
+            ans[i] = (actualRank <= 3) ?  rankName[actualRank - 1] : to_string(actualRank);
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(nlogn)
+// SC : O(n)
+
+
+// Method 2 : Count Sort
+
+class Solution {
+public:
+    vector<string> findRelativeRanks(vector<int>& score) {
+        vector<string> rankName = {"Gold Medal", "Silver Medal", "Bronze Medal"};
+        // get the maximum element
+        int maxScore = *max_element(score.begin(), score.end());
+        
+        // count sort
+        vector<int> scoreToIndex(maxScore + 1, -1);
+        for(int i = 0; i < score.size(); i++)
+            scoreToIndex[score[i]] = i;
+        
+        // map the score to the rank after filling the score to index 
+        unordered_map<int, int> scoreToRank;
+        int rankCt = 1;
+        for(int sc = maxScore; sc >= 0; sc--){
+            if(scoreToIndex[sc] == -1) continue;
+            scoreToRank[sc] = rankCt++;
+        } 
+        
+        // form ans
+        vector<string> ans(score.size()); 
+        for(int i = 0; i < score.size(); i++){
+            int actualRank = scoreToRank[score[i]];
+            ans[i] = (actualRank <= 3) ?  rankName[actualRank - 1] : to_string(actualRank);
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(max element)
+// SC : O(max element size)
+
+
+// Method 3 : Priority Queue
+
+class Solution {
+public:
+    vector<string> findRelativeRanks(vector<int>& score) {
+        int size = score.size();
+
+        priority_queue<pair<int, int>> maxHeap;
+        for(int i = 0; i < size; i++){
+            maxHeap.push(make_pair(score[i], i));
+        }
+
+        vector<string> ans(size);
+
+        int rankCt = 1;
+
+        while(!maxHeap.empty()){
+            int actualIndex = maxHeap.top().second;
+            maxHeap.pop();
+            if(rankCt == 1)
+                ans[actualIndex] = "Gold Medal";
+            else if(rankCt == 2)
+                ans[actualIndex] = "Silver Medal";
+            else if(rankCt == 3)
+                ans[actualIndex] = "Bronze Medal";
+            else 
+                ans[actualIndex] = to_string(rankCt);
+            
+            rankCt++;
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(nlogn)
+// SC : O(n)
