@@ -1,0 +1,68 @@
+// method 1 : sorting (Greedy)
+
+/*
+   maintain varibales ans and dec to know ans and amount to minus at any point of time
+   sort the input array in decreasing order
+   loop 0 to k 
+      take care of the negative condition 
+      increment dec
+    
+   return ans
+*/
+
+class Solution {
+public:
+    long long maximumHappinessSum(vector<int>& happiness, int k) {
+        long long ans = 0, dec = 0;
+
+        sort(happiness.begin(), happiness.end(), greater<int>());
+
+        for(int i = 0; i < k; i++){
+            ans += max(happiness[i] - dec, 0LL);
+            dec++;
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(nlogn)
+// SC : O(logn)
+
+
+// method 2 : priority queue
+
+/*
+    build a priority queue and store every element
+    then run a loop from 0 to k -> and get the top and minus the dec count 
+    handle the negative by 0
+    increment dec by 1
+    return ans
+*/
+
+class Solution {
+public:
+    long long maximumHappinessSum(vector<int>& happiness, int k) {
+        priority_queue<int> maxHeap;
+
+        for(auto it : happiness){
+            maxHeap.push(it);
+        }
+
+        long long ans = 0, dec = 0;
+
+        for(int i = 0; i < k; i++){
+            long long top = maxHeap.top();
+            maxHeap.pop();
+
+            ans += max(top - dec, 0LL);
+
+            dec++;
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(nlogn + klogn) nlogn -> building heap , klogn -> k traversal and popping
+// SC : O(n) // storing the array in priority queue
