@@ -1,0 +1,175 @@
+// method 1 : priority queue -> max heap
+
+/*
+    create a max heap in a pair -> double and the indexes(pair)
+    iterate the array considering ith pair and all the j other pairs
+    push its fractional value and indexes while mainitaining the heap size as k
+    get the indexes and get the elements as ans
+*/
+
+class Solution {
+public:
+    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+        priority_queue<pair<double, pair<int, int>>> maxHeap;
+        int n = arr.size();
+
+        for(int i = 0; i < n; i++){
+            for(int j = i + 1; j < n; j++){
+                double val = (arr[i] * 1.0) / arr[j];
+                maxHeap.push({val, {i, j}});
+
+                if(maxHeap.size() > k) 
+                    maxHeap.pop();
+            }
+        }
+
+        pair<int, int> indexes = maxHeap.top().second;
+        vector<int> ans;
+        ans.push_back(arr[indexes.first]);
+        ans.push_back(arr[indexes.second]);
+
+        return ans;
+    }
+};
+
+// TC : O(n^2 logk)
+// SC : O(k)
+
+
+// method 2 : priority queue -> min heap
+
+/*
+    create a min heap in a pair -> double and the indexes(pair)
+    push the first k elements in the heap
+    iterate 1 to k - 1 times and keeping the top track and
+    push its fractional value and indexes while mainitaining the heap size as k
+    get the indexes and get the elements as ans
+*/
+
+class Solution {
+public:
+    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+        priority_queue<pair<double, pair<int, int>>,
+        vector<pair<double, pair<int, int>>>, greater<pair<double, pair<int, int>>>> minHeap;
+        int n = arr.size();
+
+        for(int i = 0; i < min(n - 1, k); i++){
+            minHeap.push({(arr[i] * 1.0)/ arr.back(), {i , n - 1}});
+        }
+
+        for(int times = 1; times <= k - 1; times++){
+            auto top = minHeap.top();
+            minHeap.pop();
+
+            int i = top.second.first, j = top.second.second;
+
+            if(j - 1 > i) minHeap.push({(arr[i] * 1.0) / arr[j - 1], {i, j - 1}});
+        }
+
+        pair<int, int> indexes = minHeap.top().second;
+        vector<int> ans;
+        ans.push_back(arr[indexes.first]);
+        ans.push_back(arr[indexes.second]);
+
+        return ans;
+    }
+};
+
+
+// method 3 : Binary search  + two pointer
+
+/*
+    since array is sorted -> binary search
+    fractions ranges 0 - 1 
+    
+    main()
+    l = 0.0, r = 1.0
+    get mid 
+    if(count of elements less than equal to k) -> get indexes and return ans acordingly
+    reduce search space count > k (r = mid)
+                                 else (l = mid)
+     
+     
+    // count the fractions less than or equal to k
+    count(arr, mid)
+    directly BS cant be applied 
+    therefore two pointers
+
+    while(i < second last){
+        step 1 place the j to its current best possible position 
+        loop(j < n and arr[i]/ arr[j] > val) keep incrementing j
+
+        (j wont come back) sorted order
+
+        step 2 : add the current contribution of j ie the no of fractions (n - j)
+
+        step 3 : j out of bound then break
+
+        step 4 : if maxRatio is less than curRatio
+        update maxRaio as curRatio 
+        store positions of i and j
+
+        increment i
+
+        return the count, i position and j position as a vector 
+    }
+
+*/
+
+class Solution {
+private: 
+    vector<int> countOfSmallerorEqualElements(vector<int> &arr, double val){
+        int n = arr.size(), count = 0, ansi, ansj, i = 0, j = 1;
+        double maxRatio = 0.0;
+
+        while(i < n - 1){
+            while(j < n and arr[i] > val * arr[j]){
+                j++;
+            }
+
+            count += (n - j); // no of fraction less than equal to val( for that i)
+
+            if(j == n) break;
+
+            double curRatio = (arr[i] * 1.0) / arr[j];
+            if(maxRatio < curRatio){
+                maxRatio = curRatio;
+                ansi = i;
+                ansj = j;
+            }
+
+            i++;
+        }
+
+        return {count, ansi, ansj};
+    }
+public:
+    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+        int n = arr.size(), indexI, indexJ;
+        double l = 0.0, r = 1.0;
+
+        while(l < r){
+            double mid = l + (r - l) / 2;
+            vector<int> count = countOfSmallerorEqualElements(arr, mid);
+
+            if(count[0] == k){
+                indexI = count[1], indexJ = count[2];
+                break;
+            }
+            else if(count[0] > k){
+                r = mid;
+            }
+            else{
+                l = mid;
+            }
+        }
+        
+        return {arr[indexI], arr[indexJ]};
+    }
+};
+
+// TC : O(log(n^2) * n)
+// SC : O(1)
+
+// TC : O(n + klogk)
+// SC : O(k)
