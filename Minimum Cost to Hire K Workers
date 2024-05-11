@@ -1,0 +1,57 @@
+/*
+    Intution 
+    keep the ratio fixed while getting the sum of the quality and then multiply it and keep  
+    on updating the ans
+*/
+
+
+/*
+   APPROACH
+   // step 1 : store a pair of double and int in a vector for every element in both the array
+   (ratio, quality of that worker) ratio -> wage to quality 
+   // step 2 : sort that vector on the basis of ratio
+   (the best ones are ones with less demand of wage and more in quality)
+   // step 3 : make a variable of double to have Max size and the current quality sum to be 
+   zero and make a max heap
+   // step 4 : iterate that vector and get the ratio and add the quality to that quality
+   variable and push quality into heap
+
+   if the size of heap greater than k remove it from heap and also subtract it from variable
+
+   if size equal to k update the ans as min of (the ratio * the variable and ans)
+
+*/
+class Solution {
+public:
+    double mincostToHireWorkers(vector<int>& quality, vector<int>& wage, int k) {
+        vector<pair<double, int>> workers;
+        for(int i = 0; i < quality.size(); i++){
+            workers.push_back({(wage[i] * 1.0) / quality[i], quality[i]});
+        }
+
+        sort(workers.begin(), workers.end());
+
+        double ans = DBL_MAX, quantitySum = 0;
+        
+        priority_queue<int> maxHeap;
+        for(auto worker : workers){
+            double ratio = worker.first;
+            quantitySum += worker.second;
+            maxHeap.push(worker.second);
+
+            if(maxHeap.size() > k){
+                quantitySum -= maxHeap.top();
+                maxHeap.pop();
+            }
+
+            if(maxHeap.size() == k){
+                ans = min(ans, quantitySum * ratio);
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(nlogn + nlogk)
+// SC : O(logn + k)
