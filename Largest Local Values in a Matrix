@@ -1,0 +1,37 @@
+/* Approach
+   1] make the 2d ans vector of size n - 2 * n - 2
+   2] iterate the matrix (0 -> < n -2) and find the max int the grid of 3 * 3 and fill in  
+   the row and col (O(n - 2) ^ 2) 
+   3] traverse the 3 * 3 matrix from the curRow and curCol and get the max element (O(9))
+*/
+
+class Solution {
+private:
+    int findMax(vector<vector<int>> &grid, int curRow, int curCol){
+        int maxi = INT_MIN;
+
+        for(int i = curRow; i < curRow + 3; i++){
+            for(int j = curCol; j < curCol + 3; j++){
+                maxi = max(maxi, grid[i][j]);
+            }
+        }
+
+        return maxi;
+    }
+public:
+    vector<vector<int>> largestLocal(vector<vector<int>>& grid) {
+        int n = grid.size();
+        vector<vector<int>> ans(n - 2, vector<int>(n - 2));
+
+        for(int row = 0; row < n - 2; row++){
+            for(int col = 0; col < n - 2; col++){
+                ans[row][col] = findMax(grid, row, col);
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O((n - 2) ^ 2 * 9) ~ O(n^2)
+// SC : O(n - 2)
