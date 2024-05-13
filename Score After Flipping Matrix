@@ -1,0 +1,81 @@
+// Method 1 : Changing the original input matrix
+
+class Solution {
+public:
+    int matrixScore(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+
+        // step 1 : if 0th col has 0 flip the row
+        for(int i = 0; i < n; i++){
+            if(grid[i][0] == 0){
+                for(int j = 0; j < m; j++)
+                    grid[i][j] ^= 1;
+            }
+        }
+
+        // step 2 : check for the others contribution colwise (becoz you can flip the row now)
+        for(int j = 1; j < m; j++){
+            // get the col count
+            int colCount = 0;
+            for(int i = 0; i < n; i++)
+                colCount += grid[i][j];
+
+            // if col count is less than n - col count 
+            // we can flip the col
+            if(colCount < n - colCount){
+                for(int i = 0; i < n; i++)
+                    grid[i][j] ^= 1;
+            }
+        }
+
+        // step 3 : get the final contibution(col wise)
+        int ans = 0;
+
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                ans += grid[i][j] * (1 << (m - 1 - j));
+            }
+        } 
+
+        return ans;
+    }
+};
+
+// TC : O(n * m)
+// SC : O(n * m)
+
+
+// Method 2 : Without changing the original input matrix
+
+class Solution {
+public:
+    int matrixScore(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        
+        // step 1 : whole col 0 will have 1 so just add its contribution
+        int ans = n * (1 << (m - 1 - 0));
+
+        // step 2 : check for the others contribution col wise
+        for(int j = 1; j < m; j++){
+            // check the col count according to the col 0 of that row
+            int colCount = 0;
+            for(int i = 0; i < n; i++){
+                // if the col0 is 0 then flip the bit and add its contribution
+                colCount += grid[i][0] == 0 ? (grid[i][j] ^ 1) : grid[i][j];
+            }
+
+            // check the contribution to maximize the ans
+            if(colCount < n - colCount){
+                ans += (n - colCount) * (1 << (m - 1 - j));
+            }
+            else{
+                ans += colCount * (1 << (m - 1 - j));
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n * m)
+// SC : O(1)
