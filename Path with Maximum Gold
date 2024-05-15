@@ -1,0 +1,47 @@
+class Solution {
+public:
+    vector<int> dx = {-1, 0, 1, 0};
+    vector<int> dy = {0, 1, 0, -1};
+
+    int dfs(vector<vector<int>> &grid, int i, int j, int n, int m){
+        // base case
+        if(i < 0 or i >= n or j < 0 or j >= m or grid[i][j] == 0)
+            return 0;
+        
+        int maxSum = 0, curVal = grid[i][j];
+
+        // explore all 4 directions
+        for(int k = 0; k < 4; k++){
+            int ni = i + dx[k], nj = j + dy[k];
+
+            // step 1 : mark visited
+            grid[i][j] = 0;
+
+            // step 2 : recursive call
+            maxSum = max(maxSum, curVal + dfs(grid, ni, nj, n, m));
+
+            // step 3 : backtrack
+            grid[i][j] = curVal;
+        } 
+
+        return maxSum;
+    }
+
+    int getMaximumGold(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+
+        int ans = 0;
+
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(grid[i][j] != 0)
+                    ans = max(ans, dfs(grid, i, j, n, m));
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n * m * 3 ^ G)
+// SC : O(G)
