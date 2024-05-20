@@ -1,0 +1,53 @@
+/* 
+   INTUTION
+   Like the given tree structure (graph basically)
+   I have to choose a node and its neighbour or a pair to actually do Xor operation and increment it 
+   
+   APPROACH
+   If we are able to choose even number of node values to Xor them just to increase then thats better
+   but id there is odd no of nodes that would increase then i have to make a sacrifice because i can just 
+   take nodes in pair
+
+   So to maximize the value  of the sum of the nodes after xoring i will also try to minimize the 
+   sacrifice 
+
+   since every element of that tree structure is in another array 
+   i would actually xor it only when (its xor version is greater than its actual value)
+   I can have my sacrifice here too as we know we can only xor in pair so what if we xor one to increase its value but it was okay without the xor so sacrifice here is xor version minus actual one 
+   since the xor is increasing the value i would also count the nodes
+   
+   when i didnt xor it that means its contribution is its actaul version
+   but here again the pair logic so possible that its actual contribution was good but xor made him less
+   so sacrifice is just original - xor version
+   
+   Conclusion -> if my count of nodes is even then every pair is xored properly (who were xor extra their contribution would nulify after the next iteration)
+   if odd -> there is a sacrifice so subtract the sacifice from the sum
+
+*/ 
+     
+
+#define ll long long int  
+
+class Solution {
+public:
+    long long maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
+        ll sum = 0, cnt = 0, sacrifice = INT_MAX;
+
+        for(auto element : nums){
+            if((element ^ k) > element){
+                sum += (element ^ k);
+                sacrifice = min(sacrifice, (ll)(element ^ k) - element);
+                cnt++;
+            }
+            else{
+                sum += element;
+                sacrifice = min(sacrifice, (ll)element - (element ^ k));
+            }
+        }
+        
+        return (cnt % 2 == 0) ? sum : sum - sacrifice;
+    }
+};
+
+// TC : O(n)
+// SC : O(1)
