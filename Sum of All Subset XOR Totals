@@ -1,0 +1,61 @@
+// method 1 : Bit Masking
+
+
+class Solution {
+public:
+    int subsetXORSum(vector<int>& nums) {
+        int sum = 0, n = nums.size();
+
+        // Step 1 : generate all the mask from (0 -> 2^n - 1)
+        for(int mask = 0; mask < (1 << n); mask++){
+            int xorTotal = 0;
+            // Step 2 : calculate xorTotal for every mask and add it contribution to sum
+            for(int i = 0; i < n; i++){
+                // whether to include the element at index or not
+                if(mask & (1 << i))
+                    xorTotal ^= nums[i];
+            }
+            sum += xorTotal;
+        }
+
+        return sum;
+    }
+};
+
+// TC : O(2^n * n)
+// SC : O(1)
+
+
+// method 2 : Bit Existance and contribution
+
+
+
+// Every bit would roughly contribution for  2^n / 2 ie (2 ^ (n - 1)) times
+// Whatever each bit would contribute its effect would also take away by half times 
+// That is each element would try to contribute 2 ^ n times but other would also take away its contribution  so what ever contribution the taken away they would give themselves
+// calculate wherever the bit exist by simple OR 
+// then every bit would actually contribute half the subsets possible to form 
+
+//  (simply saying [5, 1, 6])
+//  so [5, 1, 6] 5 ^ 1 ^ 6 (5 ^ 1) contributed once 
+// ans [5, 1] this subset 5 ^ 1 also contributed 
+// but in first contribution 5 ^ 1 ^ 6 its contribution of 5 was affected 
+// therefore half
+
+class Solution {
+public:
+    int subsetXORSum(vector<int>& nums) {
+        int orTotal = 0, n = nums.size();
+
+        // Step 1 : Bit existance
+        for(auto element : nums){
+            orTotal |= element;
+        }
+
+        // Step 2 : contribution
+        return (orTotal * (1 << (n - 1)));
+    }
+};
+
+// TC : O(n)
+// SC : O(1)
