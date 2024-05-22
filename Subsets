@@ -1,0 +1,53 @@
+// Method 1 : Backtracking 
+
+
+class Solution {
+private:
+    void backtrack(int start, vector<int> &nums, vector<int> &tempList, vector<vector<int>> &list){
+        list.push_back(tempList);
+
+        for(int i = start; i < nums.size(); i++){
+            // add to temp list
+            tempList.push_back(nums[i]);
+            // recursive call
+            backtrack(i + 1, nums, tempList, list);
+            // backtrack
+            tempList.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> list;
+        vector<int> tempList;
+
+        backtrack(0, nums, tempList, list);
+
+        return list;
+    }
+};
+
+
+// Method 2 : Bit Manipulation
+
+
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n = nums.size();
+        int subsets = (1 << n);
+
+        vector<vector<int>> list;
+
+        for(int i = 0; i < subsets; i++){
+            vector<int> tempList;
+            for(int j = 0; j < n; j++){
+                if(i & (1 << j)){
+                    tempList.push_back(nums[j]);
+                }
+            }
+            list.push_back(tempList);
+        }
+
+        return list;
+    }
+};
