@@ -1,0 +1,80 @@
+// Method 1 Brute force(backtracking)
+
+class Solution {
+private:
+    int dfs(vector<int> &nums, int index, int k, unordered_map<int, int> &mp){
+        if(index == nums.size())
+            return 1;
+        
+        int taken = 0;
+
+        if(!mp[nums[index] - k] and !mp[nums[index] + k]){
+            // the current element taken so increment its freq
+            mp[nums[index]]++;
+
+            // recursive call
+            taken = dfs(nums, index + 1, k, mp);
+
+            // backtrack (for next not taking)
+            mp[nums[index]]--;
+        }
+
+        int notTaken = dfs(nums, index + 1, k, mp);
+
+        return taken + notTaken;
+    }
+public:
+    int beautifulSubsets(vector<int>& nums, int k) {
+        // map to store the frequency of the elements already taken
+        unordered_map<int, int> mp;
+        int ans = dfs(nums, 0, k, mp);
+        return ans - 1;
+    }
+};
+
+// TC : O(2^n)
+// SC : O(n)
+
+
+// Method 2 : Making groups of same mod and forming answer
+
+class Solution {
+public:
+    int beautifulSubsets(vector<int>& nums, int k) {
+        // make groups in terms of mod value
+        unordered_map<int, vector<int>> modGroup; // [el % k] -> [el1, el2, el3]
+        for(auto el : nums){
+            modGroup[el % k].push_back(el);
+        }
+
+        int ans = 1;
+        // iterate on every mod value
+        for(auto& [mod_val, v] : modGroup){
+            // get all elements having same mod values in a group
+            sort(v.begin(), v.end()); // sort to only check prev + k = el and not both side
+            map<int, int> mp; // map to store freq of these same group elements
+
+            for(auto el : v) mp[el]++; // gathering only unique elements
+
+            int prev_el = INT_MIN, prevNotTaken = 1, prevTaken = 0, nowNotTaken = 0, nowTaken = 0;
+            for(auto& [el, freq] : mp){
+                int poss_subsets = pow(2, freq) - 1; 
+                if(prev_el + k == el){ // prev_element cant be taken with current element
+                    nowNotTaken = prevNotTaken + prevTaken;
+                    nowTaken = prevNotTaken * poss_subsets;
+                }
+                else{ // prev_element can be taken with current element
+                    nowNotTaken = prevNotTaken + prevTaken; 
+                    nowTaken = (prevNotTaken + prevTaken) * poss_subsets;
+                }
+                
+                // moving forward
+                prevNotTaken = nowNotTaken;
+                prevTaken = nowTaken;
+                prev_el = el;
+            }
+            ans *= (nowNotTaken + nowTaken); // for every group
+        }
+        return ans - 1;
+    }
+};
