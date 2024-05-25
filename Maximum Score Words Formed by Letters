@@ -1,0 +1,109 @@
+// Method 1 : Bit Masking
+
+class Solution {
+public:
+    int maxScoreWords(vector<string>& words, vector<char>& letters, vector<int>& score) {
+        int n = words.size();
+        // Step 1 : generate the lettersmap to store atmax allowed freq of characters
+        // similarly scoremap to store every characters scores
+        unordered_map<char, int> lettersMap, scoreMap;
+        for(auto ch : letters) lettersMap[ch]++;
+        for(int i = 0; i < 26; i++) scoreMap[i + 'a'] = score[i];
+        
+
+        // Step 2 : generate all possible subsets
+        int maxScore = 0;
+        for(int mask = 0; mask < (1 << n); mask++){
+            unordered_map<char, int> curWordMap;  // if i am taking any word from words array
+                                                  // (storing in a map) to know the freq
+            for(int i = 0; i < n; i++){
+                if((1 << i) & mask){ // words index matches so take that word
+                    for(auto ch : words[i]) curWordMap[ch]++;
+                }
+            }
+            
+            // Step 3 : Iterate on the curWordMap to know the subsest is good or not
+            bool isBad = false;
+            for(auto [ch, freq] : curWordMap){
+                if(lettersMap[ch] < freq){ // freq is more than allow not good
+                    isBad = true;
+                    break;
+                }
+            }
+
+            if(!isBad){  // if good subset
+                int curScore = 0; 
+                for(auto [ch, freq] : curWordMap){
+                    curScore += freq * scoreMap[ch]; // get score
+                }
+                maxScore = max(maxScore, curScore); // maximize the score
+            }
+        }
+
+        return maxScore;
+    }
+};
+
+// TC : O(2^n (n * l)) -> l -> average letters in every subset
+// SC : O(26)
+
+
+// Method 2 : Rrcursion + backtracking
+
+
+class Solution {
+public:
+    bool isOk(string& word, unordered_map<char, int>& lettersMap,
+        unordered_map<char, int> wordMap){
+        for(auto ch : word){
+            wordMap[ch]++;
+            if(wordMap[ch] > lettersMap[ch]) return false;
+        }
+        return true;
+    }
+    int maxScore;
+
+    void solve(int i, vector<string>& words, vector<int>& score, 
+        unordered_map<char, int>& lettersMap, unordered_map<char, int>& wordMap){
+        int n = words.size();
+        // base case
+        if(i == n){
+            int curScore = 0;
+            for(auto [ch, freq] : wordMap) curScore += freq * score[ch - 'a']; // calculate score
+            maxScore = max(maxScore, curScore); // maximize
+            return;
+        }
+        
+        // if taken
+        if(isOk(words[i], lettersMap, wordMap)){
+            // add the word to map and incremenet its character freq 
+            for(auto ch : words[i]) wordMap[ch]++;
+
+            // recursive call
+            solve(i + 1, words, score, lettersMap, wordMap);
+
+            // backtrack and remove its effect while coming back
+            for(auto ch : words[i]) wordMap[ch]--;
+        }
+        // not taken
+        solve(i + 1,words, score, lettersMap, wordMap);
+
+        return;
+    }
+
+    int maxScoreWords(vector<string>& words, vector<char>& letters, vector<int>& score) {
+        maxScore = 0;
+        // step 1 build the lettersMap to keep the records as per require
+        // wordMap just to make sure what we still have 
+        unordered_map<char, int> lettersMap, wordMap;
+        for(auto ch : letters) lettersMap[ch]++;
+        
+        // step 2 : recursive call 
+        solve(0, words, score, lettersMap, wordMap);
+
+        return maxScore;
+    }
+};
+
+// TC : O(2^n * l)
+// SC : O(n  + 26)
