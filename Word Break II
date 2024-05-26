@@ -1,0 +1,52 @@
+class Solution {
+public:
+    unordered_map<string, vector<string>> dp; // Memoization for storing results of subproblems
+
+    // Helper function to break down the string into valid word combinations
+    vector<string> helper(string s, vector<string> &wordDict){
+        // Base case: if the string is empty, return an empty string vector
+        if(s.empty()) 
+            return {""};
+
+        // If the result for the current string is already computed, return it from memoization
+        if(dp.find(s) != dp.end())
+            return dp[s];
+
+        vector<string> subPart, wholePart;
+
+        // Iterating through each word in the word dictionary
+        for(string word : wordDict){
+            int len = word.length();
+            string iGot = s.substr(0, len);
+
+            // If the current word doesn't match the beginning of the string, skip it
+            if(iGot != word)
+                continue;
+            else{
+                // Recursively find all valid combinations for the remaining part of the string
+                subPart = helper(s.substr(len), wordDict);
+            }
+
+            // Constructing combinations using the current word and the valid combinations of the remaining string
+            for(string substring : subPart){
+                string space = substring.length() == 0 ? "" : " ";
+                wholePart.push_back(word + space + substring);
+            }
+        }
+        // Memoize the result for the current string and return
+        return dp[s] = wholePart;
+    }
+
+    // Main function to break the input string into valid word combinations
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        dp.clear(); // Clearing memoization table before starting new computation
+
+        // Calling helper function to compute the valid combinations
+        vector<string> ans = helper(s, wordDict);
+
+        return ans;
+    }
+};
+
+// TC : O(n * m)
+// SC : O(n * m)
