@@ -1,0 +1,118 @@
+// Method 1 - Top Down DP
+
+#define mod 1000000007
+#define ll long long int
+
+class Solution {
+public:
+    ll dp[100001][3][3];
+
+    ll solve(int n, int absentCount, int consecLateCount){
+        if(n == 0) return 1;
+
+        if(dp[n][absentCount][consecLateCount] != -1)
+            return dp[n][absentCount][consecLateCount];
+
+        ll ans = 0;
+
+        // P today
+        ans = (solve(n - 1, absentCount, 0)) % mod;
+
+        // A today -> only one day absent allowed
+        if(absentCount < 1)
+            ans = (ans + solve(n - 1, absentCount + 1, 0)) % mod;
+        // L today -> only 2 days, late allowed
+        if(consecLateCount < 2)
+            ans = (ans + solve(n - 1, absentCount, consecLateCount + 1)) % mod;
+
+        return dp[n][absentCount][consecLateCount] = ans % mod;
+    }
+    int checkRecord(int n) {
+        memset(dp, -1, sizeof(dp));
+        return solve(n, 0, 0);
+    }
+};
+
+// TC : O(n * 2 * 3)
+//SC : O(n * 2 * 3)
+
+
+// Method 2 - Bottom Up DP
+
+#define mod 1000000007
+#define ll long long int
+
+class Solution {
+public:
+    ll dp[100001][3][4];
+
+    int checkRecord(int n) {
+        memset(dp, 0, sizeof(dp));
+        
+        // set all the good values ofac and clc to be one
+        for(int ac = 0; ac <= 1; ac++){
+            for(int clc = 0; clc <= 2; clc++){
+                dp[0][ac][clc] = 1;
+            }
+        }
+
+        // check for every day for all ac and clc
+        for(int day = 1; day <= n; day++){
+            for(int ac = 0; ac <= 1; ac++){
+                for(int clc = 0; clc <= 2; clc++){
+                    // present 
+                    dp[day][ac][clc] = (dp[day - 1][ac][0]) % mod;
+                    // absent
+                    dp[day][ac][clc] = (dp[day][ac][clc] + dp[day - 1][ac + 1][0]) % mod;
+                    // late
+                    dp[day][ac][clc] = (dp[day][ac][clc] + dp[day - 1][ac][clc + 1]) % mod;
+                }
+            }
+        }
+
+        return dp[n][0][0];
+    }
+};
+
+// TC : O(n * 2 * 3)
+//SC : O(n * 2 * 3)
+
+
+// Method 3 - Bottom Up DP(Space Optimised)
+
+#define mod 1000000007
+
+class Solution {
+public:
+    int checkRecord(int n) {
+        vector<vector<int>> dp(3, vector<int> (4, 0));
+        vector<vector<int>> prevDp(3, vector<int> (4, 0));
+        
+        // set all the good values ofac and clc to be one in the prevDp
+        for(int ac = 0; ac <= 1; ac++){
+            for(int clc = 0; clc <= 2; clc++){
+                prevDp[ac][clc] = 1;
+            }
+        }
+
+        // check for every day for all ac and clc
+        for(int day = 1; day <= n; day++){
+            for(int ac = 0; ac <= 1; ac++){
+                for(int clc = 0; clc <= 2; clc++){
+                    // present 
+                    dp[ac][clc] = (prevDp[ac][0]) % mod;
+                    // absent
+                    dp[ac][clc] = (dp[ac][clc] + prevDp[ac + 1][0]) % mod;
+                    // late
+                    dp[ac][clc] = (dp[ac][clc] + prevDp[ac][clc + 1]) % mod;
+                }
+            }
+            prevDp = dp;
+        }
+
+        return dp[0][0];
+    }
+};
+
+// TC : O(n * 2 * 3)
+//SC : O(2 * 3) ~ O(1)
