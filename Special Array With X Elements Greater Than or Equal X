@@ -1,0 +1,82 @@
+// Method 1 - Linear Search
+
+class Solution {
+public:
+    int specialArray(vector<int>& nums) {
+        // sort in decreasing order to we can start iteration from greater ones
+        sort(nums.rbegin(), nums.rend());
+        int ct = 0, n = nums.size();
+        
+
+        for(int i = 0; i < n; i++){
+            // if greater then incremenet count and check that count doest increase by that element 
+            if(nums[i] >= ct){
+                ct++;
+                if(ct > nums[i]) return -1;
+            }
+            else{
+                return ct;
+            }
+        }
+
+        return n;
+    }
+};
+
+// TC : O(nlogn + n)  sorting plus traversal
+// SC : O(logn + n) n to consider making seperate array
+
+
+// Method 2 - Binary Search
+
+class Solution {
+public:
+    int specialArray(vector<int>& nums) {
+        // sort the array
+        sort(nums.begin(), nums.end());
+        int n = nums.size(), l = 1, r = n, ans = -1;
+        
+        // binary search
+        while(l <= r){
+            int mid = (l + r) / 2;
+
+            // number of elements >= mid
+            // lower bound (right side)
+            int sz = nums.end() - lower_bound(nums.begin(), nums.end(), mid);
+            if(sz == mid)
+                return mid; // found
+            else if(sz < mid) r = mid - 1;
+            else l = mid + 1; 
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(nlogn + (logn * logn))  sorting plus (binary search * lower bound) for evry element 
+// SC : O(logn + n) n to consider making seperate array
+
+
+// Method 3 - Bucket sort(freq) + suffix sum
+
+class Solution {
+public:
+    int specialArray(vector<int>& nums) {
+        int n = nums.size(), ct = 0;
+        // maintain the freq vector while greater than n elements should be put last
+        vector<int> freq(n + 1, 0);
+        for(auto el : nums) freq[min(n, el)]++;
+        
+        // get the suffix sum
+        for(int i = n; i >= 1; i--){
+            ct += freq[i];
+            // match found
+            if(ct == i) return i;
+        }
+
+        return -1;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
