@@ -1,0 +1,26 @@
+// Sliding window
+
+class Solution {
+public:
+    int equalSubstring(string s, string t, int maxCost) {
+        int n = s.length(), i = 0, j = 0, ans = 0, curCost = 0;
+        // try for every window 
+        while(j < n){
+            // get the cost
+            curCost += abs(t[j] - s[j]);
+            // shrink the window
+            while(i < n and curCost > maxCost){
+                curCost -= abs(t[i] - s[i]);
+                i++;
+            }
+            // maximize 
+            ans = max(ans, j - i + 1);
+            j++; // expland window
+        } 
+
+        return ans;
+    }
+};
+
+// TC : O(n)
+// SC : O(1)
