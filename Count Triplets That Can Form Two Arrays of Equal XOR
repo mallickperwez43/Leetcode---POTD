@@ -1,0 +1,127 @@
+// Method 1 : calculate both xor while making subarray
+
+class Solution {
+public:
+    int countTriplets(vector<int>& arr) {
+        int ans = 0, n = arr.size(), xora, xorb;
+
+        for(int i = 0; i < n; i++){
+            xora = 0;
+            for(int j = i + 1; j < n; j++){
+                xora = xora ^ arr[j - 1];   // xor a for [i to j -1]
+                xorb = 0;
+                for(int k = j ; k < n; k++){
+                    xorb = xorb ^ arr[k];   // xor b for[j to k]
+                    if(xora == xorb) ans++;
+                }
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n^3)
+// SC : O(1)
+
+
+// Method 2 : calculate prefix xor and add no of groups formed
+
+class Solution {
+public:
+    int countTriplets(vector<int>& arr) {
+        int ans = 0, n = arr.size();
+        
+        // maintaing a prefix xor
+        vector<int> prefixXor(n + 1, 0);
+        for(int i = 0; i < n; i++) prefixXor[i + 1] = prefixXor[i] ^arr[i];
+
+        // using i and k get the no of groups
+        for(int i = 0; i < n; i++){
+            for(int k = i + 1; k <= n; k++){
+                if(prefixXor[k] == prefixXor[i])
+                    ans += k - (i + 1);   // length = k - (i + 1) + 1 so group -> k - (i + 1)
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n^2)
+// SC : O(n)
+
+
+// Method 3 : calculate the count of prefix xor having same prefix Xor 
+// and sum of indexes having ame px and their contribution (2 PASS)
+
+class Solution {
+public:
+    int countTriplets(vector<int>& arr) {
+        int ans = 0, n = arr.size();
+        
+        // maintaing a prefix xor
+        vector<int> prefixXor(n + 1, 0);
+        for(int i = 0; i < n; i++) prefixXor[i + 1] = prefixXor[i] ^arr[i];
+        
+        // maintaing a map of sum Of indexes having same prefix Xor and count of indexes having
+        // same prefix Xor
+        unordered_map<int, int> sumOfi, countOfXor;
+        sumOfi[0] = 0;
+        countOfXor[0] = 1;
+
+        // using k anf going to all possible prefix xor from 1 to n 
+        for(int k = 1; k <= n; k++){   
+            // get the prefix xor for current index and add its contribution
+            int x = prefixXor[k];
+            ans += k * countOfXor[x] - sumOfi[x] - 1 * countOfXor[x];
+
+            // update the count and sum
+            countOfXor[x]++;
+            sumOfi[x] += k;
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
+
+
+// Method 4 : 1 PASS of method 3
+
+class Solution {
+public:
+    int countTriplets(vector<int>& arr) {
+        int ans = 0, n = arr.size();
+        
+        // maintaing a prefix xor
+        vector<int> prefixXor(n + 1, 0);
+        
+        // maintaing a map of sum Of indexes having same prefix Xor and count of indexes having
+        // same prefix Xor
+        unordered_map<int, int> sumOfi, countOfXor;
+        sumOfi[0] = 0;
+        countOfXor[0] = 1;
+
+        // using k anf going to all possible prefix xor from 1 to n 
+        for(int k = 1; k <= n; k++){ 
+            // get the current prefix xor
+            prefixXor[k] = prefixXor[k -1] ^ arr[k - 1];
+
+            // get the prefix xor for current index and add its contribution
+            int x = prefixXor[k];
+            ans += k * countOfXor[x] - sumOfi[x] - 1 * countOfXor[x];
+
+            // update the count and sum
+            countOfXor[x]++;
+            sumOfi[x] += k;
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
