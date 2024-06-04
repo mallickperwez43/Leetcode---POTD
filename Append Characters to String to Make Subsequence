@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int appendCharacters(string s, string t) {
+        int i = 0, j = 0, n = s.length(), m = t.length();
+
+        while(i < n and j < m){
+            // if char matches it a subsequence
+            if(s[i] == t[j])
+                j++;
+            i++;  // else move the i ahead 
+        }
+
+        return m - j;  // count of the characters to be added to last
+    }
+};
+
+// TC : O(n + m)
+// SC : O(1)
