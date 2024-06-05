@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int longestPalindrome(string s) {
+        int n = s.length(), ans = 0;
+
+        unordered_map<char, int> freq;
+        for(auto ch : s) freq[ch]++;
+
+        bool isOdd = false;
+        for(auto it : freq){
+            // add the even ones because it has pairs
+            if((it.second & 1) == 0) ans += it.second;
+            else{
+                // make even freq first and add to maximize  
+                ans += it.second - 1;
+                isOdd = true; // mark true to place in middle 
+            }
+        }
+
+        return (isOdd) ? ans + 1 : ans;
+    }
+};
+
+// TC : O(n)
+// SC : O(n)
