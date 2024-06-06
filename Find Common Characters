@@ -1,0 +1,33 @@
+class Solution {
+public:
+    vector<string> commonChars(vector<string>& words) {
+        // step 1 :  make the final freq vector
+        vector<int> finalFreq(26, INT_MAX);
+
+        // step 2 : iterate every strings in the words array and minimize it 
+        for(int i = 0; i < words.size(); i++){
+            // 2.1 get the current freq of the current string of word
+            vector<int> curFreq(26, 0);
+            for(auto ch : words[i]) curFreq[ch - 'a']++;
+
+            // 2.2 get the minimum freq of the common characters after getting the curFreq
+            for(char ch = 'a'; ch <= 'z'; ch++){
+                finalFreq[ch - 'a'] = min(curFreq[ch - 'a'], finalFreq[ch - 'a']);
+            }
+        }
+        
+        // step 3 : get the final minimum common character in their final freq times
+        vector<string> ans;
+        for(int i = 0; i < 26; i++){
+            while(finalFreq[i] != INT_MAX and finalFreq[i] != 0){
+                ans.push_back(string(1, i + 'a'));
+                finalFreq[i]--;
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n)
+// SC : O(26) ~ O(1)
