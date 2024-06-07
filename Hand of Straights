@@ -1,0 +1,30 @@
+class Solution {
+public:
+    bool isNStraightHand(vector<int>& hand, int groupSize) {
+        // take a map to store freq
+        map<int, int> mp;
+        for(auto h : hand) mp[h]++;
+         
+        // if we cant place groups for evry groupSize each then false
+        if(hand.size() % groupSize != 0) return false;
+
+        // iterate the map and place the starting elements of every group
+        // then just place the next elements accordingly 
+        for(auto [h, freq] : mp){
+            if(freq == 0) continue;
+            // chosing the starting point of the group
+            while(freq--){
+                // place the rest to without the map
+                for(int cur = h; cur < h + groupSize; cur++){
+                    if(mp[cur] == 0) return false; // the consecutive isnt there
+                    mp[cur]--; // used it 
+                }
+            }
+        } 
+
+        return true;
+    }
+};
+
+// TC : O(nlogn + n) (making map and inserting + iterating the map)
+// SC : O(n)
