@@ -1,0 +1,95 @@
+class TrieNode{
+    public:
+    char node;
+    unordered_map<char, TrieNode*> child;
+    bool isEnd;
+
+    TrieNode(char node){
+        this -> node = node;
+        isEnd = false;
+    }
+};
+
+class Solution {
+public:
+    TrieNode* root;
+    
+    void buildTrie(string word){
+        TrieNode* cur = root;
+        for(auto ch : word){
+            // if not present make a new node
+            if(cur -> child.find(ch) == cur -> child.end())
+                cur -> child[ch] = new TrieNode(ch);
+            // move to that     
+            cur = cur -> child[ch];
+        }
+        // after traversal of word set endflag as true
+        cur -> isEnd = true;
+    }
+    
+    vector<string> splitString(string& s, char delimeter){
+        vector<string> ans;
+        // get the start and end based on delimeter
+        int start = 0;
+        int end = s.find(delimeter, start);
+
+        while(end != string :: npos){
+            // get the substring and push to ans, then update start and end
+            string sub = s.substr(start, end - start);
+            ans.push_back(sub);
+            start = end + 1;
+            end = s.find(delimeter, start);
+        }
+        // push the last one
+        string sub = s.substr(start, end - start);
+        ans.push_back(sub);
+        return ans;
+    }
+
+    string queryTrie(string word){
+        TrieNode* cur = root;
+        string s = "";
+        for(auto ch : word){
+            // if the char doest exist in trie there is no root word 
+            if(cur -> child.find(ch) == cur -> child.end()) 
+                return word;
+
+            // build the string
+            cur = cur -> child[ch];
+            s += ch;
+            if(cur -> isEnd) return s;
+        }
+        return word;
+    }
+
+    string replaceWords(vector<string>& dictionary, string sentence) {
+        root = new TrieNode('/');
+        //step 1 : Build Trie out of Dictionary
+        for(auto word : dictionary) buildTrie(word);
+
+        // step 2 : Split the string based on a delimeter(space)
+        vector<string> splitSentences = splitString(sentence, ' '); 
+
+        // step 3 : Build ans by iterating on the trie which we have build
+        string ans = "";
+
+        for(int i = 0; i < splitSentences.size(); i++){
+            // add the word and the space
+            ans += queryTrie(splitSentences[i]) + ((i != splitSentences.size() - 1) ? " " : "");
+        }
+
+        return ans;
+    }
+};
+
+/*
+  d -> no of strings in dictionary 
+  w -> average length of each string
+  s -> no of strings added in the trie
+
+  d*w -> iteration for every words into trie 
+  s*w -> iteration for splited words into ans
+
+  TC : O(d*w  +s*w)
+  SC : O(s*w)
+*/
