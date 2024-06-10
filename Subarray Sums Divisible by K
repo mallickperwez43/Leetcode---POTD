@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int subarraysDivByK(vector<int>& nums, int k) {
+        int n = nums.size(), prefixSum = 0, ans = 0;
+
+        // maintain prev prefix sum occurance count 
+        unordered_map<int, int> prevOccCnt;
+        prevOccCnt[0] = 1;  // prefix sum intial with zero
+        
+        for(int i = 0; i < n; i++){
+            // maintaining for negative prefix sum also
+            prefixSum = (prefixSum + nums[i] % k + k) % k;
+            
+            // add the number of current existing of that prefix sum
+            ans += prevOccCnt[prefixSum];  
+
+            // increment the freq of that prefix sum
+            prevOccCnt[prefixSum]++;
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n)
+// SC : O(k) storing modulo of k so withing range 0 - k - 1 so k
