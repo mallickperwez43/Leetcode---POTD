@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int heightChecker(vector<int>& heights) {
+        // build the count array
+        vector<int> count(101, 0); 
+        for(auto h : heights) count[h]++;
+        
+        // iterate over the heights array and check if the element isnt same ans++
+        int ans = 0, index = 1;
+        for(int i = 0; i < heights.size(); i++){
+            while(count[index] == 0) index++;
+
+            if(heights[i] == index){
+                count[index]--;
+            }
+            else{
+                ans++;
+                count[index]--;
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n + (n + k))
+// SC : O(k)
