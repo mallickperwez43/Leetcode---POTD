@@ -1,0 +1,30 @@
+class Solution {
+public:
+    vector<int> relativeSortArray(vector<int>& arr1, vector<int>& arr2) {
+        // get the max element and make ans vector and maintain freq by iterating into arr1
+        int maxEl = *max_element(arr1.begin(), arr1.end());
+        vector<int> freq(maxEl + 1, 0);
+        for(auto el : arr1) freq[el]++;
+
+        // iterate arr2 and push the elements with ordering and along with their freq
+        vector<int> ans;
+        for(auto el : arr2){
+            while(freq[el]--){
+                ans.push_back(el);
+            }
+        }
+
+        // add the remaining elements to the ans (since its a map everything is sorted)
+        for(int el = 0; el <= maxEl; el++){
+            int f = freq[el];
+            while(f > 0 and f--){
+                ans.push_back(el);
+            }
+        }
+        
+        return ans;
+    }
+};
+
+// TC : O(n + m + k) k -> max element
+// SC : O(k)
