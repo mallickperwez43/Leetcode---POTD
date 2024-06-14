@@ -1,0 +1,57 @@
+// Method 1 : sort + add contribution
+
+class Solution {
+public:
+    int minMovesToSeat(vector<int>& seats, vector<int>& students) {
+        sort(seats.begin(), seats.end());
+        sort(students.begin(), students.end());
+        
+        int ans = 0;
+        for(int i = 0; i < seats.size(); i++){
+            ans += abs(seats[i] - students[i]);
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(nlogn + n)
+// SC : O(logn)
+
+
+// Method 2 : Count sort
+
+class Solution {
+public:
+    int minMovesToSeat(vector<int>& seats, vector<int>& students) {
+        // make the count arrays
+        vector<int> seatLoc(*max_element(seats.begin(), seats.end()) + 1, 0);
+        vector<int> studentsFreq(*max_element(students.begin(), students.end()) + 1, 0);
+        for(auto loc : seats) seatLoc[loc]++;
+        for(auto student : students) studentsFreq[student]++;
+
+        int ans = 0, stud = 0;
+        for(int seat = 0; seat < seatLoc.size(); seat++){
+            // until non zero found
+            if(seatLoc[seat] == 0) continue;
+            while(studentsFreq[stud] == 0) stud++;
+
+            // calculate ans at non zero locations            
+            ans += abs(seat - stud);
+
+            // decrement freq
+            studentsFreq[stud]--;
+            seatLoc[seat]--;
+
+            // edge case -> when there are more than 1 seat in same loc
+            // remain in that loc
+            if(seatLoc[seat] != 0) seat--;
+        }
+
+        return ans;
+    }
+};
+
+// k be the max element in seats / students
+// TC : O(k)
+// SC : O(k)
