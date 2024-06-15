@@ -1,0 +1,50 @@
+// Method 1 : simple sort and add contribution
+
+class Solution {
+public:
+    int minIncrementForUnique(vector<int>& nums) {
+        // sort the array 
+        sort(nums.begin(), nums.end());
+
+        // iterate from first element and if prev <= cur calculate diff + 1 and add to ans
+        int ans = 0;
+        for(int i = 1; i < nums.size(); i++){
+            if(nums[i] <= nums[i - 1]){
+                ans += (nums[i - 1] - nums[i]) + 1;
+                nums[i] += (nums[i - 1] - nums[i]) + 1;
+            }
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(nlogn + n)
+// SC : O(logn + n)  -> for creating new array
+
+
+// Method 2 :  count sort
+
+class Solution {
+public:
+    int minIncrementForUnique(vector<int>& nums) {
+        // build the freq array of size maxEl + 1 + n
+        vector<int> freq(*max_element(nums.begin(), nums.end()) + (int)nums.size() + 1, 0);
+        for(auto el : nums) freq[el]++;
+         
+        // iterate on every indexes(elements) and pass the remaining to next index if more than 1
+        int ans = 0;
+        for(int i = 0; i < freq.size(); i++){
+            if(freq[i] <= 1) continue;
+
+            int extra = freq[i] - 1;
+            freq[i + 1] += extra;
+            ans += extra;
+        }
+
+        return ans;
+    }
+};
+
+// TC : O(n + k)    k -> max element
+// SC : O(n + k)  
