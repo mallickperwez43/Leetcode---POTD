@@ -1,0 +1,41 @@
+class Solution {
+public:
+    int findMaximizedCapital(int k, int w, vector<int>& profits, vector<int>& capital) {
+        int n = profits.size();
+
+        // maintain a pair of capital and profit
+        vector<pair<int, int>> capProf;
+        for(int i = 0; i < n; i++){
+            capProf.push_back(make_pair(capital[i], profits[i]));
+        }
+
+        // sort the array on the basis of capital 
+        // so we can chose the less capital and more profit pair
+        sort(capProf.begin(), capProf.end());
+
+        priority_queue<int> pq;
+
+        // iterate k times while going to every element in prof and cap 
+        // and take min cap and max profit pair every k times
+        int totalProfit = w, j = 0;
+        for(int i = 0; i < k; i++){
+            // push the permitable profit on basis of capital
+            while(j < n and capProf[j].first <= totalProfit){
+                pq.push(capProf[j].second);
+                j++;
+            }
+            
+            // if pq is empty then break    
+            // ex w = 0, cap = {0, 5, 5}, k = 3 can chose 0th one but not 1st and 2nd one 
+            if(pq.size() == 0) break;
+
+            totalProfit += pq.top();
+            pq.pop();
+        } 
+
+        return totalProfit;
+    }
+};
+
+// TC : O(nlogn)
+// SC : O(n)
