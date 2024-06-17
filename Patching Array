@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int minPatches(vector<int>& nums, int n) {
+        // minNumberOfPatches: Counter for the number of patches added
+        // maxNumber: Tracks the maximum number that can be formed using the given array and patches
+        // i: Index to iterate through the input array
+        // sz: Size of the input array
+        long int minNumberOfPatches = 0, maxNumber = 0, i = 0, sz = nums.size();
+        
+        // Iterate until maxNumber is less than n
+        while (maxNumber < n) {
+            // Check if the current array element can be used to extend the range
+            if (i < sz && maxNumber + 1 >= nums[i]) {
+                maxNumber += nums[i];  // Extend maxNumber using nums[i]
+                i++;  // Move to the next element in the array
+            } else {
+                // If nums[i] is too large or no more elements, add a patch (maxNumber + 1)
+                minNumberOfPatches++;  // Increment patch count
+                maxNumber += (maxNumber + 1);  // Add maxNumber + 1 to extend the range
+            }
+        }
+
+        return minNumberOfPatches;  // Return the total number of patches needed
+    }
+};
+
+// TC : O(n + logn)
+// SC : O(1)
