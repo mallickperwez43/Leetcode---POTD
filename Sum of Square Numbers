@@ -1,0 +1,42 @@
+// Method 1
+
+#define ll long long 
+class Solution {
+public:
+    bool judgeSquareSum(int c) {
+        // check for all A's and get b from relation
+        // if b is perfect square then true
+        for(ll a = 0; a * a <= c; a++){ // TC : O(sqrt(C))
+            ll b = sqrt(c - a * a); // TC : O(log c)
+            if(b * b == c - a * a) return true;
+        }
+
+        return false;
+    }
+};
+
+// TC : O(sqrt(c) * log c)
+// SC : O(1)
+
+
+
+// Method 2 : Two Pointer
+
+#define ll long long 
+class Solution {
+public:
+    bool judgeSquareSum(int c) {
+        ll b = sqrt(c), a = 0; // TC : O(log c)
+        while(a <= b){ // TC : O(sqrt(c))
+            ll res = a*a + b*b;
+            if(res == c) return true;
+            else if(res < c)a++;
+            else b--;
+        }
+
+        return false;
+    }
+};
+
+// TC : O(sqrt(c) + log c)
+// SC : O(1)
